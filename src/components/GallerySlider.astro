@@ -1,0 +1,35 @@
+---
+const { id = `embla-${Math.random().toString(36).slice(2)}`, images = [] } = Astro.props;
+---
+<div id={id} class="select-none">
+  <div class="overflow-hidden" data-embla-viewport>
+    <div class="flex" data-embla-container>
+      {images.map((src) => (
+        <div class="min-w-0 flex-[0_0_85%] pr-4 md:flex-[0_0_45%] lg:flex-[0_0_33%]">
+          <img src={src} class="h-80 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="mt-4 flex gap-2">
+    <button type="button" class="rounded-full bg-white/10 px-4 py-2 hover:bg-white/20" data-embla-prev>Prev</button>
+    <button type="button" class="rounded-full bg-white/10 px-4 py-2 hover:bg-white/20" data-embla-next>Next</button>
+  </div>
+</div>
+
+<script type="module" define:vars={{ id }}>
+  import EmblaCarousel from "embla-carousel";
+
+  const root = document.getElementById(id);
+  if (root) {
+    const viewport = root.querySelector("[data-embla-viewport]");
+    const prevBtn = root.querySelector("[data-embla-prev]");
+    const nextBtn = root.querySelector("[data-embla-next]");
+
+    const embla = EmblaCarousel(viewport, { loop: true });
+
+    prevBtn?.addEventListener("click", () => embla.scrollPrev());
+    nextBtn?.addEventListener("click", () => embla.scrollNext());
+  }
+</script>
