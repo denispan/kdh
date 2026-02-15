@@ -1,57 +1,40 @@
 ---
 // src/components/Header.astro
-const navLinks = [
+const navLinksLeft = [
   { href: "#music", label: "Музыка" },
   { href: "#photos", label: "Фото" },
+
+];
+
+const navLinksRight = [
   { href: "#video", label: "Видео" },
   { href: "#contacts", label: "Контакты" },
 ];
-
-const socialLinks = [
-  { href: "#", label: "VK", icon: "/socials/vk.svg" },
-  { href: "#", label: "Telegram", icon: "/socials/tg.svg" },
-  { href: "#", label: "YouTube", icon: "/socials/rutube.svg" },
-];
 ---
 
-<header class="sticky top-0 z-50 w-full">
+<header class="fixed inset-x-0 top-0 z-50 w-full">
   <div class="bg-black/30 backdrop-blur">
     <div class="mx-auto max-w-6xl px-6 pt-[10px] pb-3">
       <div class="grid h-16 grid-cols-3 items-center">
-        <!-- Left: menu -->
-        <nav class="flex items-center justify-start gap-8 text-xs uppercase tracking-[0.22em] text-white">
-          {navLinks.slice(0, 3).map((l) => (
+        <nav class="flex items-center justify-start gap-12 text-s font-bold uppercase tracking-[0.22em] text-white">
+          {navLinksLeft.map((l) => (
             <a class="hover:opacity-80" href={l.href}>
               {l.label}
             </a>
           ))}
         </nav>
 
-        <!-- Center: logo -->
         <a href="#music" class="mx-auto inline-flex h-full items-center justify-center">
-          <img
-            src="/logo.svg"
-            alt="Logo"
-            class="h-full w-auto"
-            decoding="async"
-            loading="eager"
-          />
+          <img src="/logo.svg" alt="Logo" class="h-full w-auto" decoding="async" loading="eager" />
         </a>
 
-        <!-- Right: socials -->
-        <div class="flex items-center justify-end gap-3">
-          {socialLinks.map((s) => (
-            <a
-              href={s.href}
-              aria-label={s.label}
-              class="inline-flex h-12 w-12 items-center justify-center rounded-full  hover:bg-white/20"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src={s.icon} alt="" class="h-9 w-9" decoding="async" loading="eager" />
+        <nav class="flex items-center justify-end gap-12 text-s font-bold uppercase tracking-[0.22em] text-white">
+          {navLinksRight.map((l) => (
+            <a class="hover:opacity-80" href={l.href}>
+              {l.label}
             </a>
           ))}
-        </div>
+        </nav>
       </div>
     </div>
   </div>
