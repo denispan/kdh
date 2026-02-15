@@ -2,11 +2,13 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import HeroVideo from "../components/HeroVideo.astro";
+import SectionDivider from "../components/SectionDivider.astro";
 ---
 <BaseLayout title="Site">
   <Header />
   <main>
     <HeroVideo />
+    <SectionDivider height={120} />
 
     <section id="music" class="mx-auto max-w-6xl px-6 py-20">
       <h2 class="text-3xl font-semibold">Music</h2>
@@ -16,6 +18,7 @@ import HeroVideo from "../components/HeroVideo.astro";
         </a>
       </div>
     </section>
+
 
     <section id="video" class="mx-auto max-w-6xl px-6 py-20">
       <h2 class="text-3xl font-semibold">Video</h2>

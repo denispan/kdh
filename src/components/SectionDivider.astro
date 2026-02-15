@@ -1,0 +1,21 @@
+---
+const { height = 24 } = Astro.props;
+---
+
+<div aria-hidden="true" class="relative w-full overflow-hidden" style={`height:${height}px;`}>
+  <div
+    class="absolute inset-0"
+    style={`
+      background: linear-gradient(
+        175deg,
+        #ffffff 0%,
+        #ffffff 28%,
+        #ffffff 33%,
+        #0039a6 46%,
+        #0039a6 62%,
+        #d52b1e 78%,
+        #d52b1e 100%
+      );
+    `}
+  ></div>
+</div>
