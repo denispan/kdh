@@ -1,0 +1,52 @@
+---
+// src/components/GallerySection.astro
+import GallerySlider from "../GallerySlider.astro";
+import { photos } from "../../data/photos";
+---
+
+<section id="photos" class="py-20">
+  <div class="mx-auto max-w-6xl px-6">
+    <h2 class="text-3xl font-semibold uppercase tracking-[0.12em]">Галерея</h2>
+  </div>
+
+  <!-- full-bleed slider -->
+  <div class="mt-8 w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+    <GallerySlider images={photos} />
+  </div>
+
+  <!-- modal -->
+  <dialog class="backdrop:bg-black/80 bg-transparent p-0 max-w-none w-full h-full" data-gallery-modal>
+    <button
+      type="button"
+      class="fixed right-6 top-6 z-50 rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20"
+      data-gallery-close
+    >
+      Закрыть
+    </button>
+
+    <img alt="" class="m-auto max-h-[92svh] max-w-[96vw] rounded-2xl object-contain" data-gallery-image />
+  </dialog>
+
+  <script>
+    const modal = document.querySelector<HTMLDialogElement>("[data-gallery-modal]");
+    const modalImg = document.querySelector<HTMLImageElement>("[data-gallery-image]");
+    const closeBtn = document.querySelector("[data-gallery-close]");
+
+    const open = (src: string) => {
+      if (!modalImg || !modal) return;
+      modalImg.src = src;
+      modal.showModal();
+    };
+
+    const close = () => modal?.close();
+
+    closeBtn?.addEventListener("click", close);
+    modal?.addEventListener("click", (e) => {
+      if (e.target === modal) close();
+    });
+
+    window.addEventListener("gallery:open", ((e: CustomEvent) => {
+      open(e.detail?.src);
+    }) as EventListener);
+  </script>
+</section>
