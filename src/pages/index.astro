@@ -1,25 +1,18 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Header from "../components/Header.astro";
-import HeroVideoSection from "../components/Sections/HeroVideoSection.astro";
-import SectionDivider from "../components/SectionDivider.astro";
-import AchivmentsSection from "../components/Sections/AchivmentsSection.astro";
-import MusicSection from "../components/Sections/MusicSection.astro";
-import VideoSection from "../components/Sections/VideoSection.astro";
-import Footer from "../components/Footer.astro";
-import GallerySection from "../components/Sections/GallerySection.astro";
+import Header from "../sections/Header.astro";
+import HeroVideo from "../sections/HeroVideo.astro";
+import SectionDivider from "../sections/Divider.astro";
+import Achivments from "../sections/Achivments.astro";
+import Footer from "../sections/Footer.astro";
+import PhotoGallery from "../sections/PhotoGallery.astro";
 ---
 <BaseLayout title="Site">
   <Header />
   <main>
-    <HeroVideoSection />
-    <AchivmentsSection />
-    <GallerySection />
-    <!-- <SectionDivider height={120} /> -->
-
-    <!-- <MusicSection />
-    <VideoSection /> -->
-
+    <HeroVideo />
+    <Achivments />
+    <PhotoGallery />
     <Footer />
   </main>
 </BaseLayout>
