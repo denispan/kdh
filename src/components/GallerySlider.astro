@@ -2,15 +2,15 @@
 const { images = [] } = Astro.props;
 ---
 
-<div class="select-none w-full" data-gallery-slider>
+<div class="select-none w-full relative" data-gallery-slider>
   <div class="overflow-hidden w-full touch-pan-y" data-embla-viewport>
-    <div class="-ml-3 flex sm:-ml-4" data-embla-container>
+    <div class="flex" data-embla-container>
       {images.map((src: string) => (
-        <div class="min-w-0 flex-[0_0_85%] pl-3 sm:flex-[0_0_50%] sm:pl-4 lg:flex-[0_0_33.333%]">
+        <div class="min-w-0 flex-[0_0_85%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
           <button
             type="button"
             data-src={src}
-            class="group relative block w-full overflow-hidden rounded-2xl cursor-pointer"
+            class="group relative block w-full overflow-hidden cursor-pointer"
           >
             <img
               src={src}
@@ -19,31 +19,30 @@ const { images = [] } = Astro.props;
               decoding="async"
               alt=""
             />
-            <div class="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/10"></div>
+            <div class="pointer-events-none absolute inset-0 ring-1 ring-white/10"></div>
           </button>
         </div>
       ))}
     </div>
   </div>
 
-  <div class="mt-4 flex justify-center gap-3">
-    <button
-      type="button"
-      class="rounded-full border border-white/20 bg-white/5 px-5 py-2 text-sm backdrop-blur transition hover:bg-white/15"
-      data-embla-prev
-      aria-label="Назад"
-    >
-      ←
-    </button>
-    <button
-      type="button"
-      class="rounded-full border border-white/20 bg-white/5 px-5 py-2 text-sm backdrop-blur transition hover:bg-white/15"
-      data-embla-next
-      aria-label="Вперёд"
-    >
-      →
-    </button>
-  </div>
+  <button
+    type="button"
+    class="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45"
+    data-embla-prev
+    aria-label="Назад"
+  >
+    ←
+  </button>
+
+  <button
+    type="button"
+    class="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45"
+    data-embla-next
+    aria-label="Вперёд"
+  >
+    →
+  </button>
 </div>
 
 <script>
@@ -53,8 +52,8 @@ const { images = [] } = Astro.props;
     const viewport = root.querySelector<HTMLElement>("[data-embla-viewport]");
     if (!viewport) return;
 
-    const prevBtn = root.querySelector("[data-embla-prev]");
-    const nextBtn = root.querySelector("[data-embla-next]");
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-embla-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-embla-next]");
 
     const embla = EmblaCarousel(viewport, {
       loop: true,
@@ -65,27 +64,30 @@ const { images = [] } = Astro.props;
     prevBtn?.addEventListener("click", () => embla.scrollPrev());
     nextBtn?.addEventListener("click", () => embla.scrollNext());
 
-    // Отслеживаем drag, чтобы свайп не открывал фото
     let startX = 0;
     let startY = 0;
     let wasDragged = false;
 
-    viewport.addEventListener("pointerdown", (e) => {
+    viewport.addEventListener("pointerdown", (e: PointerEvent) => {
       startX = e.clientX;
       startY = e.clientY;
       wasDragged = false;
     });
 
-    viewport.addEventListener("pointermove", (e) => {
+    viewport.addEventListener("pointermove", (e: PointerEvent) => {
       const dx = Math.abs(e.clientX - startX);
       const dy = Math.abs(e.clientY - startY);
       if (dx > 5 || dy > 5) wasDragged = true;
     });
 
-    root.addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest<HTMLElement>("button[data-src]");
+    root.addEventListener("click", (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const btn = target?.closest<HTMLButtonElement>("button[data-src]");
       if (!btn) return;
-      if (wasDragged) { wasDragged = false; return; }
+      if (wasDragged) {
+        wasDragged = false;
+        return;
+      }
       window.dispatchEvent(new CustomEvent("gallery:open", { detail: { src: btn.dataset.src } }));
     });
   });

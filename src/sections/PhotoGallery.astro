@@ -14,17 +14,34 @@ import { photos } from "../data/photos";
   </div>
 
   <!-- modal -->
-  <dialog class="backdrop:bg-black/80 bg-transparent p-0 max-w-none w-full h-full" data-gallery-modal>
-    <button
-      type="button"
-      class="fixed right-6 top-6 z-50 rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20"
-      data-gallery-close
-    >
-      Закрыть
-    </button>
+  <dialog
+    class="backdrop:bg-black/80 bg-transparent p-0 m-0 max-w-none w-[80vw] h-[80svh]"
+    data-gallery-modal
+  >
+    <div class="relative h-full w-full rounded-2xl border border-white/15 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+      <button
+        type="button"
+        class="absolute right-4 top-4 z-50 rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20"
+        data-gallery-close
+      >
+        Закрыть
+      </button>
 
-    <img alt="" class="m-auto max-h-[92svh] max-w-[96vw] rounded-2xl object-contain" data-gallery-image />
+      <img
+        alt=""
+        class="h-full w-full rounded-2xl object-contain"
+        data-gallery-image
+      />
+    </div>
   </dialog>
+
+  <style>
+    dialog[data-gallery-modal] {
+      position: fixed;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
 
   <script>
     const modal = document.querySelector<HTMLDialogElement>("[data-gallery-modal]");
