@@ -12,15 +12,46 @@ const tracks = [
 ];
 
 const platformLinks = [
-  { key: "yandex", label: "Yandex", href: "#", icon: "✦" },
-  { key: "spotify", label: "Spotify", href: "#", icon: "♪" },
-  { key: "apple", label: "Apple Music", href: "#", icon: "" },
-  { key: "vk", label: "VK Music", href: "#", icon: "VK" },
+  { key: "yandex", label: "Yandex Music", href: "#", iconSrc: "/icons/music-yandex.png" },
+  { key: "vk", label: "VK Music", href: "#", iconSrc: "/icons/vk-music.png" },
+  { key: "zvuk", label: "Звук", href: "#", iconSrc: "/icons/zvuk-music.png" },
+  { key: "mts", label: "МТС Music", href: "#", iconSrc: "/icons/music-mts.png" },
 ];
 ---
 
-<section id="music" class="py-24">
-  <div class="mx-auto max-w-6xl px-6">
+<section id="music" class="relative py-24 overflow-hidden">
+  <!-- gradient background -->
+  <!-- vertical bg: black -> purple -> red -->
+  <div
+  aria-hidden="true"
+  class="pointer-events-none absolute inset-0"
+  style="
+    background:
+      radial-gradient(900px 520px at 40% 45%, rgba(168, 85, 247, 0.28), transparent 60%),
+      radial-gradient(900px 520px at 65% 60%, rgba(124, 58, 237, 0.22), transparent 62%),
+      linear-gradient(
+        180deg,
+        #000000 0%,
+        #0a0614 20%,
+        #2b0f66 50%,
+        #0a0614 80%,
+        #000000 100%
+      );
+  "
+></div>
+
+  <!-- subtle grain (optional) -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
+    style="
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.9) 1px, transparent 0);
+      background-size: 3px 3px;
+    "
+  ></div>
+
+  <div class="relative mx-auto max-w-6xl px-6">
     <h2 class="text-center text-3xl font-semibold uppercase tracking-[0.12em]">Музыка</h2>
     <p class="mt-3 text-center text-lg font-medium tracking-[0.22em] text-white/70">
       Каверы популярных хитов в оригинальном казачьем исполнении
@@ -28,7 +59,7 @@ const platformLinks = [
 
     <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {tracks.map((t) => (
-        <article class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+        <article class="rounded-2xl border border-white/10 bg-black/20 p-5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
           <div class="flex items-center gap-4">
             <img
               src={t.colorLogo}
@@ -48,7 +79,13 @@ const platformLinks = [
                     aria-label={p.label}
                     class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-black/30 ring-1 ring-white/10 transition hover:bg-black/45"
                   >
-                    <span class="text-sm">{p.icon}</span>
+                    <img
+                      src={p.iconSrc}
+                      alt={p.label}
+                      class="h-5 w-5 object-contain opacity-90"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </a>
                 ))}
               </div>
