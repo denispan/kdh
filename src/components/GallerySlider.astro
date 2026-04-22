@@ -6,7 +6,7 @@ const { images = [] } = Astro.props;
   <div class="overflow-hidden w-full touch-pan-y" data-embla-viewport>
     <div class="flex" data-embla-container>
       {images.map((src: string) => (
-        <div class="min-w-0 flex-[0_0_85%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
+        <div class="min-w-0 flex-[0_0_66.666%]">
           <button
             type="button"
             data-src={src}
@@ -14,7 +14,7 @@ const { images = [] } = Astro.props;
           >
             <img
               src={src}
-              class="h-[75svh] w-full object-cover object-top transition-transform duration-300 group-hover:scale-105 sm:h-80"
+              class="h-[95svh] w-full object-cover object-top transition-transform duration-300 group-hover:scale-105 sm:h-[35rem]"
               loading="lazy"
               decoding="async"
               alt=""
@@ -57,8 +57,9 @@ const { images = [] } = Astro.props;
 
     const embla = EmblaCarousel(viewport, {
       loop: true,
-      align: "start",
+      align: "center",
       containScroll: "trimSnaps",
+      
     });
 
     prevBtn?.addEventListener("click", () => embla.scrollPrev());
