@@ -1,31 +1,19 @@
 ---
 // src/components/Header.astro
-const navLinksLeft = [
+const navLinks = [
   { href: "#music", label: "Музыка" },
   { href: "#photos", label: "Фото" },
-];
-
-const navLinksRight = [
   { href: "#video", label: "Видео" },
   { href: "#contacts", label: "Контакты" },
 ];
-
-const navLinksMobile = [...navLinksLeft, ...navLinksRight];
 ---
 
 <header class="fixed inset-x-0 top-0 z-50 w-full" data-header>
   <!-- один фон для всего хедера + выпадашки -->
     <div class="mx-auto max-w-6xl px-6 pt-[10px] pb-3">
-      <div class="hidden md:flex h-16 items-center justify-center gap-64">
-        <nav class="flex items-center gap-12 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinksLeft.map((l) => (
-            <a class="hover:opacity-80" href={l.href}>
-              {l.label}
-            </a>
-          ))}
-        </nav>
-        <nav class="flex items-center gap-12 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinksRight.map((l) => (
+      <div class="hidden md:flex h-16 items-center justify-center">
+        <nav class="flex items-center gap-32 text-sm font-bold uppercase tracking-[0.22em] text-white">
+          {navLinks.map((l) => (
             <a class="hover:opacity-80" href={l.href}>
               {l.label}
             </a>
@@ -60,7 +48,7 @@ const navLinksMobile = [...navLinksLeft, ...navLinksRight];
     <div class="hidden md:hidden" data-mobile-menu>
       <div class="mx-auto max-w-6xl px-6 pb-4">
         <nav class="flex flex-col gap-4 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinksMobile.map((l) => (
+          {navLinks.map((l) => (
             <a class="hover:opacity-80" href={l.href} data-menu-link>
               {l.label}
             </a>
