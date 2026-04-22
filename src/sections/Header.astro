@@ -1,122 +1,21 @@
 ---
-// src/components/Header.astro
-const navLinksLeft = [
+const navLinks = [
   { href: "#music", label: "Музыка" },
   { href: "#photos", label: "Фото" },
-];
-
-const navLinksRight = [
   { href: "#video", label: "Видео" },
   { href: "#contacts", label: "Контакты" },
 ];
-
-const navLinksMobile = [...navLinksLeft, ...navLinksRight];
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 w-full" data-header>
-  <!-- один фон для всего хедера + выпадашки -->
-  <div class="bg-black/20 backdrop-blur">
-    <div class="mx-auto max-w-6xl px-6 pt-[10px] pb-3">
-      <div class="hidden md:grid h-16 grid-cols-3 items-center">
-        <nav class="flex items-center justify-start gap-12 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinksLeft.map((l) => (
-            <a class="hover:opacity-80" href={l.href}>
-              {l.label}
-            </a>
-          ))}
-        </nav>
-
-        <a href="#music" class="mx-auto inline-flex h-full items-center justify-center">
-          <img src="/logo.svg" alt="Logo" class="h-full w-auto" decoding="async" loading="eager" />
-        </a>
-
-        <nav class="flex items-center justify-end gap-12 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinksRight.map((l) => (
-            <a class="hover:opacity-80" href={l.href}>
-              {l.label}
-            </a>
-          ))}
-        </nav>
-      </div>
-
-      <div class="grid md:hidden h-16 grid-cols-3 items-center">
-        <div></div>
-
-        <a href="#" class="mx-auto inline-flex h-full items-center justify-center">
-          <img src="/logo.svg" alt="Logo" class="h-full w-auto" decoding="async" loading="eager" />
-        </a>
-
-        <div class="flex justify-end">
-          <button
-            type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10"
-            aria-label="Меню"
-            aria-expanded="false"
-            data-menu-toggle
-          >
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- убираем border-t и отдельный bg у меню, делаем тот же фон что и у шапки -->
-    <div class="hidden md:hidden" data-mobile-menu>
-      <div class="mx-auto max-w-6xl px-6 pb-4">
-        <nav class="flex flex-col gap-4 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinksMobile.map((l) => (
-            <a class="hover:opacity-80" href={l.href} data-menu-link>
-              {l.label}
-            </a>
-          ))}
-        </nav>
-      </div>
+<header class="absolute inset-0 z-50 flex justify-center pt-[10%]" data-header>
+  <div class="flex flex-col items-center">
+    <nav class="flex flex-col items-center gap-8 text-[3.33rem] font-bold uppercase tracking-[0.22em] text-white">
+        {navLinks.map((l) => (
+          <a class="hover:opacity-80 transition-opacity" href={l.href}>
+            {l.label}
+          </a>
+        ))}
+      </nav>
     </div>
   </div>
 </header>
-
-<script>
-  const header = document.querySelector("[data-header]");
-  const toggle = header?.querySelector("[data-menu-toggle]");
-  const menu = header?.querySelector("[data-mobile-menu]");
-
-  const closeMenu = () => {
-    menu?.classList.add("hidden");
-    toggle?.setAttribute("aria-expanded", "false");
-  };
-
-  const toggleMenu = () => {
-    if (!menu || !toggle) return;
-    const isOpen = !menu.classList.contains("hidden");
-    if (isOpen) closeMenu();
-    else {
-      menu.classList.remove("hidden");
-      toggle.setAttribute("aria-expanded", "true");
-    }
-  };
-
-  toggle?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleMenu();
-  });
-
-  header?.querySelectorAll("[data-menu-link]").forEach((a) => {
-    a.addEventListener("click", closeMenu);
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!header || !menu) return;
-    if (!menu.classList.contains("opacity-100")) return;
-
-    const target = e.target;
-    if (!(target instanceof Node)) return;
-
-    if (!header.contains(target)) closeMenu();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
-  });
-</script>
