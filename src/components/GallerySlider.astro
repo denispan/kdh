@@ -59,7 +59,8 @@ const { images = [] } = Astro.props;
       loop: true,
       align: "center",
       containScroll: "trimSnaps",
-      
+      dragFree: false,
+      watchDrag: true,
     });
 
     prevBtn?.addEventListener("click", () => embla.scrollPrev());
@@ -78,8 +79,45 @@ const { images = [] } = Astro.props;
     viewport.addEventListener("pointermove", (e: PointerEvent) => {
       const dx = Math.abs(e.clientX - startX);
       const dy = Math.abs(e.clientY - startY);
-      if (dx > 5 || dy > 5) wasDragged = true;
+      if (dx > 5 || dy > 5) {
+        wasDragged = true;
+      }
     });
+
+    let wheelTimeout: number | null = null;
+    let isScrolling = false;
+    const SWIPE_THRESHOLD = 50;
+
+    viewport.addEventListener("wheel", (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        return;
+      }
+
+      e.preventDefault();
+
+      if (isScrolling) {
+        return;
+      }
+
+      if (Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
+        isScrolling = true;
+        
+        if (e.deltaX > 0) {
+          embla.scrollNext();
+        } else {
+          embla.scrollPrev();
+        }
+
+        if (wheelTimeout !== null) {
+          clearTimeout(wheelTimeout);
+        }
+
+        wheelTimeout = window.setTimeout(() => {
+          isScrolling = false;
+          wheelTimeout = null;
+        }, 300);
+      }
+    }, { passive: false });
 
     root.addEventListener("click", (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
