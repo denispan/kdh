@@ -1,0 +1,140 @@
+---
+const { videos = [] } = Astro.props;
+---
+
+<div class="select-none w-full relative" data-video-slider>
+  <div class="overflow-hidden w-full touch-pan-y" data-embla-viewport>
+    <div class="flex" data-embla-container>
+      {videos.map((video: { src: string; thumbnail: string }) => (
+        <div class="min-w-0 flex-[0_0_66.666%]">
+          <button
+            type="button"
+            data-video-src={video.src}
+            class="group relative block w-full overflow-hidden cursor-pointer"
+          >
+            <div class="relative h-[95svh] w-full bg-black sm:h-[35rem]">
+              <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-black/40">
+                <div class="rounded-full bg-white/20 p-6 backdrop-blur-sm transition-transform group-hover:scale-110">
+                  <svg class="h-12 w-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
+            </div>
+            <div class="pointer-events-none absolute inset-0 ring-1 ring-white/10"></div>
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45 cursor-pointer"
+    data-embla-prev
+    aria-label="Назад"
+  >
+    ←
+  </button>
+
+  <button
+    type="button"
+    class="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45 cursor-pointer"
+    data-embla-next
+    aria-label="Вперёд"
+  >
+    →
+  </button>
+</div>
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  document.querySelectorAll<HTMLElement>("[data-video-slider]").forEach((root) => {
+    const viewport = root.querySelector<HTMLElement>("[data-embla-viewport]");
+    if (!viewport) {
+      return;
+    }
+
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-embla-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-embla-next]");
+
+    const embla = EmblaCarousel(viewport, {
+      loop: true,
+      align: "center",
+      containScroll: "trimSnaps",
+      dragFree: false,
+      watchDrag: true,
+    });
+
+    prevBtn?.addEventListener("click", () => embla.scrollPrev());
+    nextBtn?.addEventListener("click", () => embla.scrollNext());
+
+    let startX = 0;
+    let startY = 0;
+    let wasDragged = false;
+
+    viewport.addEventListener("pointerdown", (e: PointerEvent) => {
+      startX = e.clientX;
+      startY = e.clientY;
+      wasDragged = false;
+    });
+
+    viewport.addEventListener("pointermove", (e: PointerEvent) => {
+      const dx = Math.abs(e.clientX - startX);
+      const dy = Math.abs(e.clientY - startY);
+      if (dx > 5 || dy > 5) {
+        wasDragged = true;
+      }
+    });
+
+    let wheelTimeout: number | null = null;
+    let isScrolling = false;
+    const SWIPE_THRESHOLD = 50;
+
+    viewport.addEventListener("wheel", (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        return;
+      }
+
+      e.preventDefault();
+
+      if (isScrolling) {
+        return;
+      }
+
+      if (Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
+        isScrolling = true;
+        
+        if (e.deltaX > 0) {
+          embla.scrollNext();
+        } else {
+          embla.scrollPrev();
+        }
+
+        if (wheelTimeout !== null) {
+          clearTimeout(wheelTimeout);
+        }
+
+        wheelTimeout = window.setTimeout(() => {
+          isScrolling = false;
+          wheelTimeout = null;
+        }, 300);
+      }
+    }, { passive: false });
+
+    root.addEventListener("click", (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const btn = target?.closest<HTMLButtonElement>("button[data-video-src]");
+      if (!btn) {
+        return;
+      }
+      if (wasDragged) {
+        wasDragged = false;
+        return;
+      }
+      window.dispatchEvent(new CustomEvent("video:open", { detail: { src: btn.dataset.videoSrc } }));
+    });
+  });
+</script>
