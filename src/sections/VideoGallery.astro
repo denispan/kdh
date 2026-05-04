@@ -2,7 +2,32 @@
 import { videos } from "../data/videos";
 ---
 
-<section id="videos" class="py-16">
+<section id="videos" class="relative py-16 overflow-hidden">
+    <!-- gradient background -->
+  <div
+  aria-hidden="true"
+  class="pointer-events-none absolute inset-0"
+  style="
+    background:
+      /* top fade to black */
+      linear-gradient(
+        180deg,
+        #000 0%,
+        rgba(0,0,0,0.35) 25%,
+        rgba(0,0,0,0) 60%
+      ),
+      /* bottom fade to black */
+      linear-gradient(
+        0deg,
+        #000 0%,
+        rgba(0,0,0,0.35) 25%,
+        rgba(0,0,0,0) 60%
+      ),
+      /* solid purple base */
+      #2b0f66;
+  "
+></div>
+
   <div class="relative mx-auto max-w-6xl px-6">
     <h2 class="sr-only">Видео</h2>
 
