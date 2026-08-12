@@ -1,10 +1,10 @@
 ---
 // Иконка и подпись площадки — общие для всех треков, ссылка у каждого трека своя.
 const platforms = [
-  { key: "yandex", label: "Yandex Music", iconSrc: "/icons/music-yandex.png" },
+  { key: "yandex", label: "Yandex Music", iconSrc: "/icons/yandex-music.png" },
   { key: "vk", label: "VK Music", iconSrc: "/icons/vk-music.png" },
   { key: "zvuk", label: "Звук", iconSrc: "/icons/zvuk-music.png" },
-  { key: "mts", label: "МТС Music", iconSrc: "/icons/music-mts.png" },
+  { key: "mts", label: "МТС Music", iconSrc: "/icons/mts-music.png" },
 ] as const;
 
 type PlatformKey = (typeof platforms)[number]["key"];
@@ -23,7 +23,7 @@ const tracks: Track[] = [
     links: {
       yandex: "https://music.yandex.ru/album/33837156/track/132484680",
       vk: "https://music.vk.com/link/de4z1",
-      zvuk: "",
+      zvuk: "https://zvuk.com/track/141007451",
       mts: "https://music.mts.ru/album/33837156/track/132484680",
     },
   },
@@ -33,7 +33,7 @@ const tracks: Track[] = [
     links: {
       yandex: "https://music.yandex.ru/album/33940222/track/132741393",
       vk: "https://music.vk.com/link/wloVP",
-      zvuk: "",
+      zvuk: "https://zvuk.com/track/141104802",
       mts: "https://music.mts.ru/album/33940222/track/132741393",
     },
   },
@@ -42,8 +42,8 @@ const tracks: Track[] = [
     colorLogo: "/logo-color/blue.png",
     links: {
       yandex: "https://music.yandex.ru/album/38883204/track/144488599",
-      vk: "",
-      zvuk: "",
+      vk: "https://vk.ru/music/album/-2000662374_25662374",
+      zvuk: "https://zvuk.com/track/163509869",
       mts: "https://music.mts.ru/album/38883204/track/144488599",
     },
   },
@@ -53,7 +53,7 @@ const tracks: Track[] = [
     links: {
       yandex: "https://music.yandex.ru/album/33594159/track/131901454",
       vk: "https://music.vk.com/link/0jbML",
-      zvuk: "",
+      zvuk: "https://zvuk.com/track/140504845",
       mts: "https://music.mts.ru/album/33594159/track/131901454",
     },
   },
@@ -62,8 +62,8 @@ const tracks: Track[] = [
     colorLogo: "/logo-color/green.png",
     links: {
       yandex: "https://music.yandex.ru/album/38901543/track/144527798",
-      vk: "",
-      zvuk: "",
+      vk: "https://vk.ru/audio-2001130038_144130038",
+      zvuk: "https://zvuk.com/track/163899829",
       mts: "https://music.mts.ru/album/38901543/track/144527798",
     },
   },
@@ -72,8 +72,8 @@ const tracks: Track[] = [
     colorLogo: "/logo-color/purple.png",
     links: {
       yandex: "https://music.yandex.ru/album/33837162/track/132484708",
-      vk: "",
-      zvuk: "",
+      vk: "https://vk.ru/audio-2001920225_131920225",
+      zvuk: "https://zvuk.com/track/141007239",
       mts: "https://music.mts.ru/album/33837162/track/132484708",
     },
   },
@@ -83,7 +83,7 @@ const tracks: Track[] = [
     links: {
       yandex: "https://music.yandex.ru/album/33835702/track/132481407",
       vk: "https://music.vk.com/link/Iq4dw",
-      zvuk: "",
+      zvuk: "https://zvuk.com/track/141004086",
       mts: "https://music.mts.ru/album/33835702/track/132481407",
     },
   },
@@ -93,7 +93,7 @@ const tracks: Track[] = [
     links: {
       yandex: "https://music.yandex.ru/album/33613156/track/131947849",
       vk: "https://music.vk.com/link/dnQZL",
-      zvuk: "",
+      zvuk: "https://zvuk.com/track/140510250",
       mts: "https://music.mts.ru/album/33613156/track/131947849",
     },
   },
@@ -103,7 +103,7 @@ const tracks: Track[] = [
     links: {
       yandex: "https://music.yandex.ru/album/33629772/track/131990035",
       vk: "https://music.vk.com/link/mZkXE",
-      zvuk: "",
+      zvuk: "https://zvuk.com/track/140527061",
       mts: "https://music.mts.ru/album/33629772/track/131990035",
     },
   },
