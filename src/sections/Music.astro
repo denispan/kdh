@@ -1,21 +1,72 @@
 ---
-const tracks = [
-  { title: "Где-то", colorLogo: "/logo-color/blue-pink.png" },
-  { title: "Ты сделана из огня", colorLogo: "/logo-color/red.png" },
-  { title: "Если ты со мной", colorLogo: "/logo-color/blue.png" },
-  { title: "Мой ненаглядный", colorLogo: "/logo-color/pink.png" },
-  { title: "Желанная", colorLogo: "/logo-color/green.png" },
-  { title: "Ребята с нашего двора", colorLogo: "/logo-color/purple.png" },
-  { title: "Облака", colorLogo: "/logo-color/orange.png" },
-  { title: "Никто не услышит", colorLogo: "/logo-color/yellow.png" },
-  { title: "Нарисуй мне небо", colorLogo: "/logo-color/mint.png" },
-];
+// Иконка и подпись площадки — общие для всех треков, ссылка у каждого трека своя.
+const platforms = [
+  { key: "yandex", label: "Yandex Music", iconSrc: "/icons/music-yandex.png" },
+  { key: "vk", label: "VK Music", iconSrc: "/icons/vk-music.png" },
+  { key: "zvuk", label: "Звук", iconSrc: "/icons/zvuk-music.png" },
+  { key: "mts", label: "МТС Music", iconSrc: "/icons/music-mts.png" },
+] as const;
 
-const platformLinks = [
-  { key: "yandex", label: "Yandex Music", href: "#", iconSrc: "/icons/music-yandex.png" },
-  { key: "vk", label: "VK Music", href: "#", iconSrc: "/icons/vk-music.png" },
-  { key: "zvuk", label: "Звук", href: "#", iconSrc: "/icons/zvuk-music.png" },
-  { key: "mts", label: "МТС Music", href: "#", iconSrc: "/icons/music-mts.png" },
+type PlatformKey = (typeof platforms)[number]["key"];
+
+type Track = {
+  title: string;
+  colorLogo: string;
+  // Ключ площадки → ссылка. Площадки без ссылки просто не выводятся.
+  links: Partial<Record<PlatformKey, string>>;
+};
+
+const tracks: Track[] = [
+  {
+    title: "Где-то",
+    colorLogo: "/logo-color/blue-pink.png",
+    links: { 
+      yandex: "https://music.yandex.ru/album/33837156/track/132484680", 
+      vk: "https://vk.ru/audio-2001920185_131920185_5a3fb1634e1bca5059", 
+      zvuk: "https://zvuk.com/track/141007451", 
+      mts: "https://mts-music-spo.onelink.me/sKFX/c2gjouy6" 
+    },
+  },
+  {
+    title: "Ты сделана из огня",
+    colorLogo: "/logo-color/red.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Если ты со мной",
+    colorLogo: "/logo-color/blue.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Мой ненаглядный",
+    colorLogo: "/logo-color/pink.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Желанная",
+    colorLogo: "/logo-color/green.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Ребята с нашего двора",
+    colorLogo: "/logo-color/purple.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Облака",
+    colorLogo: "/logo-color/orange.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Никто не услышит",
+    colorLogo: "/logo-color/yellow.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
+  {
+    title: "Нарисуй мне небо",
+    colorLogo: "/logo-color/mint.png",
+    links: { yandex: "", vk: "", zvuk: "", mts: "" },
+  },
 ];
 ---
 
@@ -78,15 +129,17 @@ const platformLinks = [
               <h3 class="truncate text-lg font-medium">{t.title}</h3>
 
               <div class="mt-3 flex items-center gap-2">
-                {platformLinks.map((p) => (
+                {platforms.filter((p) => t.links[p.key]).map((p) => (
                   <a
-                    href={p.href}
-                    aria-label={p.label}
+                    href={t.links[p.key]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${t.title} — ${p.label}`}
                     class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-black/30 ring-1 ring-white/10 transition hover:bg-black/45"
                   >
                     <img
                       src={p.iconSrc}
-                      alt={p.label}
+                      alt=""
                       class="h-5 w-5 object-contain opacity-90"
                       loading="lazy"
                       decoding="async"
