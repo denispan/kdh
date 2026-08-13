@@ -1,4 +1,6 @@
 ---
+import Slider from "../components/Slider.astro";
+
 // Иконка и подпись площадки — общие для всех треков, ссылка у каждого трека своя.
 const platforms = [
   { key: "yandex", label: "Yandex Music", iconSrc: "/icons/yandex-music.png" },
@@ -107,7 +109,124 @@ const tracks: Track[] = [
       mts: "https://music.mts.ru/album/33629772/track/131990035",
     },
   },
+  {
+    title: "Ледяное сердце",
+    colorLogo: "/logo-color/pink-purple.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/38883202/track/144488595",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/38883202/track/144488595",
+    },
+  },
+  {
+    title: "У тебя есть я",
+    colorLogo: "/logo-color/pink-yellow.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/38884401/track/144490731",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/38884401/track/144490731",
+    },
+  },
+  {
+    title: "Ничего не бойся",
+    colorLogo: "/logo-color/multifruct.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/33837154/track/132484679",
+      vk: "https://music.vk.com/link/c5Tss",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/33837154/track/132484679",
+    },
+  },
+  {
+    title: "Штрихи",
+    colorLogo: "/logo-color/yellow.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/33837161/track/132484707",
+      vk: "https://music.vk.com/link/jqS8r",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/33837161/track/132484707",
+    },
+  },
+  {
+    title: "Гудбай, Америка",
+    colorLogo: "/logo-color/blue.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/33837160/track/132484706",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/33837160/track/132484706",
+    },
+  },
+  {
+    title: "Выше",
+    colorLogo: "/logo-color/mint.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/38788512/track/144294646",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/38788512/track/144294646",
+    },
+  },
+  {
+    title: "Туда",
+    colorLogo: "/logo-color/purple.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/38788513/track/144294650",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/38788513/track/144294650",
+    },
+  },
+  {
+    title: "Всё, что в жизни есть у меня",
+    colorLogo: "/logo-color/green.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/38804764/track/144327013",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/38804764/track/144327013",
+    },
+  },
+  {
+    title: "Грею счастье",
+    colorLogo: "/logo-color/orange.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/38883201/track/144488594",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/38883201/track/144488594",
+    },
+  },
+  {
+    title: "Единственная",
+    colorLogo: "/logo-color/pink.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/42551366/track/152443999",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/42551366/track/152443999",
+    },
+  },
+  {
+    title: "Кровь горячая",
+    colorLogo: "/logo-color/red.png",
+    links: {
+      yandex: "https://music.yandex.ru/album/43101043/track/153737062",
+      vk: "",
+      zvuk: "",
+      mts: "https://music.mts.ru/album/43101043/track/153737062",
+    },
+  },
 ];
+
+// Один слайд = 3 ряда по 3 песни.
+const PER_SLIDE = 9;
+const pages: Track[][] = Array.from(
+  { length: Math.ceil(tracks.length / PER_SLIDE) },
+  (_, i) => tracks.slice(i * PER_SLIDE, (i + 1) * PER_SLIDE),
+);
 ---
 
 <section id="music" class="relative py-16 overflow-hidden">
@@ -153,9 +272,11 @@ const tracks: Track[] = [
       Каверы популярных хитов в оригинальном казачьем исполнении
     </p>
 
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {tracks.map((t) => (
-        <article class="rounded-2xl border border-white/10 bg-black/20 p-5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+    <Slider>
+      {pages.map((page) => (
+        <div class="min-w-0 flex-[0_0_100%] grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {page.map((t) => (
+        <article class="min-w-0 rounded-2xl border border-white/10 bg-black/20 p-5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
           <div class="flex items-center gap-4">
             <img
               src={t.colorLogo}
@@ -190,7 +311,9 @@ const tracks: Track[] = [
             </div>
           </div>
         </article>
+          ))}
+        </div>
       ))}
-    </div>
+    </Slider>
   </div>
 </section>

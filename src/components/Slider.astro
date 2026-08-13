@@ -1,0 +1,96 @@
+---
+// Универсальный Embla-слайдер: слайды передаются через <slot />.
+// slideClass задаёт ширину слайда (flex-basis) для конкретного использования.
+// loop=false: слайдер стоит на первом слайде и не перескакивает с начала в конец.
+const { slideClass = "flex-[0_0_66.666%]", loop = false } = Astro.props;
+---
+
+<div class="select-none w-full relative" data-slider data-loop={loop ? "true" : "false"}>
+  <div class="overflow-hidden w-full touch-pan-y" data-embla-viewport>
+    <!-- items-start: неполный слайд не растягивается по высоте самого высокого -->
+    <div class="flex items-start gap-6" data-embla-container data-slide-class={slideClass}>
+      <slot />
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45 cursor-pointer"
+    data-embla-prev
+    aria-label="Назад"
+  >
+    ←
+  </button>
+
+  <button
+    type="button"
+    class="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45 cursor-pointer"
+    data-embla-next
+    aria-label="Вперёд"
+  >
+    →
+  </button>
+</div>
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  document.querySelectorAll<HTMLElement>("[data-slider]").forEach((root) => {
+    const viewport = root.querySelector<HTMLElement>("[data-embla-viewport]");
+    if (!viewport) return;
+
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-embla-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-embla-next]");
+
+    const embla = EmblaCarousel(viewport, {
+      loop: root.dataset.loop === "true",
+      align: "start",
+      startIndex: 0,
+      containScroll: "trimSnaps",
+      dragFree: false,
+      watchDrag: true,
+    });
+
+    prevBtn?.addEventListener("click", () => embla.scrollPrev());
+    nextBtn?.addEventListener("click", () => embla.scrollNext());
+
+    // Без loop стрелка на краю ничего не делает — гасим её, чтобы это было видно.
+    const syncArrows = () => {
+      prevBtn?.classList.toggle("opacity-30", !embla.canScrollPrev());
+      prevBtn?.classList.toggle("pointer-events-none", !embla.canScrollPrev());
+      nextBtn?.classList.toggle("opacity-30", !embla.canScrollNext());
+      nextBtn?.classList.toggle("pointer-events-none", !embla.canScrollNext());
+    };
+
+    syncArrows();
+    embla.on("select", syncArrows).on("reInit", syncArrows);
+
+    let wheelTimeout: number | null = null;
+    let isScrolling = false;
+    const SWIPE_THRESHOLD = 50;
+
+    viewport.addEventListener("wheel", (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
+
+      e.preventDefault();
+      if (isScrolling) return;
+
+      if (Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
+        isScrolling = true;
+
+        if (e.deltaX > 0) {
+          embla.scrollNext();
+        } else {
+          embla.scrollPrev();
+        }
+
+        if (wheelTimeout !== null) clearTimeout(wheelTimeout);
+
+        wheelTimeout = window.setTimeout(() => {
+          isScrolling = false;
+          wheelTimeout = null;
+        }, 300);
+      }
+    }, { passive: false });
+  });
+</script>
