@@ -2,10 +2,23 @@
 // Универсальный Embla-слайдер: слайды передаются через <slot />.
 // slideClass задаёт ширину слайда (flex-basis) для конкретного использования.
 // loop=false: слайдер стоит на первом слайде и не перескакивает с начала в конец.
-const { slideClass = "flex-[0_0_66.666%]", loop = false } = Astro.props;
+// perSlide/cols — сколько карточек и колонок на слайде для [base, sm, lg].
+// Рядов получается perSlide / cols; пересборка слайдов идёт на клиенте при смене брейкпоинта.
+const {
+  slideClass = "flex-[0_0_66.666%]",
+  loop = false,
+  perSlide = null,
+  cols = null,
+} = Astro.props;
 ---
 
-<div class="select-none w-full relative" data-slider data-loop={loop ? "true" : "false"}>
+<div
+  class="select-none w-full relative"
+  data-slider
+  data-loop={loop ? "true" : "false"}
+  data-per-slide={perSlide ? perSlide.join(",") : undefined}
+  data-cols={cols ? cols.join(",") : undefined}
+>
   <div class="overflow-hidden w-full touch-pan-y" data-embla-viewport>
     <!-- items-start: неполный слайд не растягивается по высоте самого высокого -->
     <div class="flex items-start gap-6" data-embla-container data-slide-class={slideClass}>
@@ -64,6 +77,56 @@ const { slideClass = "flex-[0_0_66.666%]", loop = false } = Astro.props;
 
     syncArrows();
     embla.on("select", syncArrows).on("reInit", syncArrows);
+
+    // Пересборка слайдов под брейкпоинт: рядов всегда одинаково, меняется число колонок.
+    const perSlide = (root.dataset.perSlide ?? "").split(",").map(Number);
+    const colsPerBp = (root.dataset.cols ?? "").split(",").map(Number);
+    const container = viewport.firstElementChild as HTMLElement | null;
+
+    if (perSlide.length === 3 && colsPerBp.length === 3 && container) {
+      const colsClass: Record<number, string> = {
+        1: "grid-cols-1",
+        2: "grid-cols-2",
+        3: "grid-cols-3",
+      };
+
+      // Карточки, как их отрендерил сервер (уже сгруппированные в слайды).
+      const cards = [...container.children].flatMap((child) =>
+        child.hasAttribute("data-slide-group") ? [...child.children] : [child],
+      );
+
+      const smQuery = window.matchMedia("(min-width: 640px)");
+      const lgQuery = window.matchMedia("(min-width: 1024px)");
+
+      const breakpoint = () => (lgQuery.matches ? 2 : smQuery.matches ? 1 : 0);
+
+      let currentBp = -1;
+
+      const relayout = () => {
+        const bp = breakpoint();
+        if (bp === currentBp) return;
+        currentBp = bp;
+
+        const size = perSlide[bp];
+        const slides: HTMLElement[] = [];
+
+        for (let i = 0; i < cards.length; i += size) {
+          const slide = document.createElement("div");
+          slide.setAttribute("data-slide-group", "");
+          slide.className = `min-w-0 flex-[0_0_100%] grid gap-6 ${colsClass[colsPerBp[bp]]}`;
+          slide.append(...cards.slice(i, i + size));
+          slides.push(slide);
+        }
+
+        container.replaceChildren(...slides);
+        embla.reInit();
+      };
+
+      relayout();
+      smQuery.addEventListener("change", relayout);
+      lgQuery.addEventListener("change", relayout);
+      window.addEventListener("resize", relayout);
+    }
 
     let wheelTimeout: number | null = null;
     let isScrolling = false;
