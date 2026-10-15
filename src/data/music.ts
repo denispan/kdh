@@ -8,9 +8,12 @@ export const platforms = [
 
 export type Track = {
   title: string;
+  // Запасная картинка, если обложки нет в releases.json.
   colorLogo: string;
+  // Исполнитель оригинала — выводится в карточке как «оригинал — …».
+  original?: string;
   // Ключ площадки → ссылка. Площадки без ссылки просто не выводятся.
-  links: Partial<Record<typeof platforms[number]["key"], string>>;
+  links: Partial<Record<(typeof platforms)[number]["key"], string>>;
 };
 
 export const tracks: Track[] = [
@@ -67,6 +70,7 @@ export const tracks: Track[] = [
   {
     title: "Ребята с нашего двора",
     colorLogo: "/logo-color/purple.png",
+    original: "Любэ",
     links: {
       yandex: "https://music.yandex.ru/album/33837162/track/132484708",
       vk: "https://vk.ru/audio-2001920225_131920225",
@@ -97,6 +101,7 @@ export const tracks: Track[] = [
   {
     title: "Нарисуй мне небо",
     colorLogo: "/logo-color/mint.png",
+    original: "Ёлка",
     links: {
       yandex: "https://music.yandex.ru/album/33629772/track/131990035",
       vk: "https://music.vk.com/link/mZkXE",
@@ -147,6 +152,7 @@ export const tracks: Track[] = [
   {
     title: "Гудбай, Америка",
     colorLogo: "/logo-color/blue.png",
+    original: "Наутилус Помпилиус",
     links: {
       yandex: "https://music.yandex.ru/album/33837160/track/132484706",
       vk: "",
@@ -177,6 +183,7 @@ export const tracks: Track[] = [
   {
     title: "Всё, что в жизни есть у меня",
     colorLogo: "/logo-color/green.png",
+    original: "Самоцветы",
     links: {
       yandex: "https://music.yandex.ru/album/38804764/track/144327013",
       vk: "",

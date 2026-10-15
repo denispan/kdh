@@ -7,7 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "photos:process": "node scripts/process-photos.mjs"
+    "photos:process": "node scripts/process-photos.mjs",
+    "releases:fetch": "node scripts/fetch-releases.mjs",
+    "check": "astro check"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -16,6 +18,8 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "sharp": "^0.34.5"
+    "@astrojs/check": "^0.9.10",
+    "sharp": "^0.34.5",
+    "typescript": "^5.9.3"
   }
 }

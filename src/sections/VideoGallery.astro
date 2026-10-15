@@ -1,65 +1,61 @@
 ---
+import { allVideosHref } from "../data/social";
 import { videos } from "../data/videos";
 ---
 
-<section id="videos" class="relative py-16 overflow-hidden">
-    <!-- gradient background -->
+<section id="videos" class="relative overflow-hidden py-20 sm:py-24">
+  <!-- фиолетовая подложка с затемнением к краям -->
   <div
-  aria-hidden="true"
-  class="pointer-events-none absolute inset-0"
-  style="
-    background:
-      /* top fade to black */
-      linear-gradient(
-        180deg,
-        #000 0%,
-        rgba(0,0,0,0.35) 25%,
-        rgba(0,0,0,0) 60%
-      ),
-      /* bottom fade to black */
-      linear-gradient(
-        0deg,
-        #000 0%,
-        rgba(0,0,0,0.35) 25%,
-        rgba(0,0,0,0) 60%
-      ),
-      /* solid purple base */
-      #2b0f66;
-  "
-></div>
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0"
+    style="
+      background:
+        linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        linear-gradient(0deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        #2b0f66;
+    "
+  ></div>
 
   <div class="relative mx-auto max-w-6xl px-6">
-    <h2 class="sr-only">Видео</h2>
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
+      <div>
+        <p class="eyebrow">Видео</p>
+        <h2 class="section-title mt-3">
+          Клипы <span class="text-gradient-brand">и живые</span> выступления
+        </h2>
+      </div>
+      <a href={allVideosHref} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Все видео в VK</a>
+    </div>
 
-    <div class="grid gap-12 xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
-      {videos.map((video) => (
-        <article class="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur">
-          <button
-            type="button"
-            data-video-src={video.src}
-            class="relative block w-full cursor-pointer"
-          >
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 sm:gap-8">
+      {videos.map((video, i) => (
+        <article
+          class="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-1"
+          data-reveal
+          style={`--reveal-delay: ${i * 90}ms`}
+        >
+          <button type="button" data-video-src={video.src} class="relative block w-full cursor-pointer">
             <div class="relative aspect-video w-full overflow-hidden bg-black">
               <img
                 src={video.thumbnail}
                 alt={video.title}
-                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
                 decoding="async"
               />
-              
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
-              
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20"></div>
+
               <div class="absolute inset-0 flex items-center justify-center">
-                <div class="rounded-full bg-white/20 p-6 backdrop-blur-sm transition-transform group-hover:scale-110">
-                  <svg class="h-12 w-12 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
+                <div class="pulse-ring relative rounded-full bg-white/20 p-6 backdrop-blur-sm transition-transform group-hover:scale-110">
+                  <svg class="h-12 w-12 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
               </div>
 
-              <div class="absolute bottom-0 left-0 right-0 p-4">
-                <h3 class="text-lg font-medium text-white">{video.title}</h3>
+              <div class="absolute bottom-0 left-0 right-0 p-5 text-left">
+                <h3 class="font-display text-lg font-bold text-white">{video.title}</h3>
               </div>
             </div>
           </button>
@@ -69,27 +65,27 @@ import { videos } from "../data/videos";
   </div>
 
   <dialog
-    class="backdrop:bg-black/80 bg-transparent p-0 m-0 max-w-none w-[90vw] h-[90svh]"
+    class="m-0 h-[90svh] w-[90vw] max-w-none bg-transparent p-0 backdrop:bg-black/85"
     data-video-modal
   >
     <div class="relative h-full w-full rounded-2xl border border-white/15 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur">
       <button
         type="button"
-        class="absolute right-4 top-4 z-50 rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20 cursor-pointer"
+        class="absolute right-4 top-4 z-50 cursor-pointer rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20"
         data-video-close
       >
         Закрыть
       </button>
 
-      <div class="h-full w-full rounded-2xl overflow-hidden">
+      <div class="h-full w-full overflow-hidden rounded-2xl">
         <iframe
           data-video-iframe
+          title="Видео"
           width="100%"
           height="100%"
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
-          frameborder="0"
           allowfullscreen
-          class="rounded-2xl"
+          class="rounded-2xl border-0"
         ></iframe>
       </div>
     </div>
@@ -109,35 +105,28 @@ import { videos } from "../data/videos";
     const closeBtn = document.querySelector("[data-video-close]");
 
     const open = (src: string) => {
-      if (!modalIframe || !modal) {
-        return;
-      }
+      if (!modalIframe || !modal) return;
       modalIframe.src = src;
       modal.showModal();
     };
 
     const close = () => {
-      if (!modalIframe || !modal) {
-        return;
-      }
+      if (!modalIframe || !modal) return;
       modal.close();
       modalIframe.src = "";
     };
 
     closeBtn?.addEventListener("click", close);
     modal?.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        close();
-      }
+      if (e.target === modal) close();
     });
+    modal?.addEventListener("cancel", close);
 
-    document.querySelectorAll<HTMLButtonElement>("button[data-video-src]").forEach((btn) => {
+    for (const btn of document.querySelectorAll<HTMLButtonElement>("button[data-video-src]")) {
       btn.addEventListener("click", () => {
         const src = btn.dataset.videoSrc;
-        if (src) {
-          open(src);
-        }
+        if (src) open(src);
       });
-    });
+    }
   </script>
 </section>

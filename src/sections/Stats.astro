@@ -1,0 +1,93 @@
+---
+import { tracks } from "../data/music";
+import { videos } from "../data/videos";
+import { plural } from "../lib/plural";
+
+// Цифры берутся из данных сайта; год — без анимации счётчика.
+const numbers = [
+  {
+    value: tracks.length,
+    label: plural(tracks.length, ["сингл на всех площадках", "сингла на всех площадках", "синглов на всех площадках"]),
+    countUp: true,
+  },
+  {
+    value: videos.length,
+    label: plural(videos.length, ["клип", "клипа", "клипов"]),
+    countUp: true,
+  },
+  { value: 2024, label: "год рождения проекта", countUp: false },
+];
+
+// Факты — текстом, без цифр, которые нельзя подтвердить.
+const facts = [
+  "Большая дискотека Авторадио — живой концерт на стадионе",
+  "При поддержке Президентского фонда культурных инициатив",
+  "Фестиваль «Новая песня года»",
+];
+---
+
+<section class="relative border-y border-white/10 bg-black" aria-label="Проект в цифрах">
+  <div class="mx-auto max-w-6xl px-6 py-10 sm:py-12">
+    <dl class="grid gap-8 sm:grid-cols-3">
+      {numbers.map((n, i) => (
+        <div class="flex flex-col-reverse text-center sm:text-left" data-reveal style={`--reveal-delay: ${i * 90}ms`}>
+          <dt class="mt-2 text-sm text-white/60">{n.label}</dt>
+          <dd
+            class="text-gradient-brand font-display text-5xl font-extrabold leading-none tabular-nums sm:text-6xl"
+            data-count={n.countUp ? n.value : undefined}
+          >
+            {n.value}
+          </dd>
+        </div>
+      ))}
+    </dl>
+
+    <ul class="mt-10 flex flex-wrap gap-3" data-reveal style="--reveal-delay: 240ms">
+      {facts.map((fact) => (
+        <li class="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80">{fact}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  // Счётчик: цифра «набегает» от нуля, когда блок появляется на экране.
+  const DURATION_MS = 1400;
+
+  const animate = (el: HTMLElement) => {
+    const target = Number(el.dataset.count);
+    if (!Number.isFinite(target)) return;
+
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / DURATION_MS);
+      const eased = 1 - (1 - t) ** 3;
+      el.textContent = String(Math.round(target * eased));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const init = () => {
+    const nodes = document.querySelectorAll<HTMLElement>("[data-count]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (nodes.length === 0 || reducedMotion || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting || !(entry.target instanceof HTMLElement)) continue;
+          animate(entry.target);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    for (const node of nodes) {
+      observer.observe(node);
+    }
+  };
+
+  init();
+</script>

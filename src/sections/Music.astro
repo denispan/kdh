@@ -1,6 +1,10 @@
 ---
+import FeaturedRelease from "../components/FeaturedRelease.astro";
 import Slider from "../components/Slider.astro";
-import { platforms, tracks, type Track } from "../data/music";
+import TrackCard from "../components/TrackCard.astro";
+import { tracks, type Track } from "../data/music";
+import { findRelease, latestRelease } from "../data/releases";
+import { plural } from "../lib/plural";
 
 // Рядов на слайде всегда 3, меняется число колонок:
 // база — 1 колонка (3 песни), sm — 2 колонки (6), lg — 3 колонки (9).
@@ -13,93 +17,106 @@ const pages: Track[][] = Array.from(
   { length: Math.ceil(tracks.length / PER_SLIDE) },
   (_, i) => tracks.slice(i * PER_SLIDE, (i + 1) * PER_SLIDE),
 );
+
+const latest = latestRelease(tracks.map((t) => t.title));
+const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === latest.id) : undefined;
+
+const singlesCount = `${tracks.length} ${plural(tracks.length, ["сингл", "сингла", "синглов"])}`;
 ---
 
-<section id="music" class="relative py-16 overflow-hidden">
-  <!-- gradient background -->
-  <div
-  aria-hidden="true"
-  class="pointer-events-none absolute inset-0"
-  style="
-    background:
-      /* top fade to black */
-      linear-gradient(
-        180deg,
-        #000 0%,
-        rgba(0,0,0,0.35) 25%,
-        rgba(0,0,0,0) 60%
-      ),
-      /* bottom fade to black */
-      linear-gradient(
-        0deg,
-        #000 0%,
-        rgba(0,0,0,0.35) 25%,
-        rgba(0,0,0,0) 60%
-      ),
-      /* solid purple base */
-      #2b0f66;
-  "
-></div>
-
-  <!-- subtle grain (optional) -->
+<section id="music" class="relative overflow-hidden py-20 sm:py-24">
+  <!-- фиолетовая подложка с затемнением к краям -->
   <div
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
+    class="pointer-events-none absolute inset-0"
     style="
-      background-image:
-        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.9) 1px, transparent 0);
-      background-size: 3px 3px;
+      background:
+        linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        linear-gradient(0deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        #2b0f66;
     "
   ></div>
+  <!-- цветные пятна света -->
+  <div aria-hidden="true" class="pointer-events-none absolute -left-40 top-24 h-96 w-96 rounded-full bg-brand-magenta/30 blur-3xl"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute -right-40 bottom-10 h-96 w-96 rounded-full bg-brand-blue/30 blur-3xl"></div>
 
   <div class="relative mx-auto max-w-6xl px-6">
-    <h2 class="sr-only">Музыка</h2>
-    <p class="sr-only">
-      Каверы популярных хитов в оригинальном казачьем исполнении
-    </p>
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
+      <div>
+        <p class="eyebrow">Музыка</p>
+        <h2 class="section-title mt-3">
+          Хиты, которые вы знаете.<br />
+          <span class="text-gradient-brand">Звучание — нет</span>
+        </h2>
+      </div>
+      <p class="max-w-md text-white/70 md:text-right">
+        {singlesCount} — каверы на любимые песни в казачьем многоголосии.
+        Нажмите ▶ на обложке: 30 секунд, чтобы влюбиться.
+      </p>
+    </div>
 
-    <Slider perSlide={PER_SLIDE_BY_BP} cols={COLS_BY_BP}>
-      {pages.map((page) => (
-        <div data-slide-group class="min-w-0 flex-[0_0_100%] grid gap-6 grid-cols-3">
-          {page.map((t) => (
-        <article class="min-w-0 rounded-2xl border border-white/10 bg-black/20 p-5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
-          <div class="flex items-center gap-4">
-            <img
-              src={t.colorLogo}
-              alt=""
-              class="h-16 w-16 shrink-0 rounded-xl object-cover ring-1 ring-white/10"
-              loading="lazy"
-              decoding="async"
-            />
+    {latest && latestTrack && <FeaturedRelease track={latestTrack} release={latest} />}
 
-            <div class="min-w-0 flex-1">
-              <h3 class="truncate text-lg font-medium">{t.title}</h3>
-
-              <div class="mt-3 flex items-center gap-2">
-                {platforms.filter((p) => t.links[p.key]).map((p) => (
-                  <a
-                    href={t.links[p.key]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${t.title} — ${p.label}`}
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-black/30 ring-1 ring-white/10 transition hover:bg-black/45"
-                  >
-                    <img
-                      src={p.iconSrc}
-                      alt=""
-                      class="h-5 w-5 object-contain opacity-90"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </a>
-                ))}
-              </div>
-            </div>
+    <div class="mt-10" data-reveal>
+      <Slider perSlide={PER_SLIDE_BY_BP} cols={COLS_BY_BP}>
+        {pages.map((page) => (
+          <div data-slide-group class="grid min-w-0 flex-[0_0_100%] grid-cols-3 gap-4">
+            {page.map((t) => (
+              <TrackCard track={t} release={findRelease(t.title)} />
+            ))}
           </div>
-        </article>
-          ))}
-        </div>
-      ))}
-    </Slider>
+        ))}
+      </Slider>
+    </div>
   </div>
+
+  <audio data-preview-audio preload="none"></audio>
+
+  <script>
+    // Превью 30 секунд: один <audio> на страницу, играет только одна кнопка.
+    const audio = document.querySelector<HTMLAudioElement>("[data-preview-audio]");
+    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-preview]");
+    let current: HTMLButtonElement | null = null;
+
+    const setPlaying = (btn: HTMLButtonElement, playing: boolean) => {
+      btn.dataset.playing = String(playing);
+      btn.setAttribute("aria-pressed", String(playing));
+    };
+
+    const stop = () => {
+      if (current) setPlaying(current, false);
+      current = null;
+      audio?.pause();
+    };
+
+    const play = async (btn: HTMLButtonElement) => {
+      const src = btn.dataset.preview;
+      if (!audio || !src) return;
+
+      stop();
+      audio.src = src;
+      current = btn;
+      setPlaying(btn, true);
+
+      try {
+        await audio.play();
+      } catch {
+        // Браузер запретил воспроизведение или файл недоступен — просто снимаем состояние.
+        stop();
+      }
+    };
+
+    for (const btn of buttons) {
+      btn.addEventListener("click", () => {
+        if (current === btn) stop();
+        else play(btn);
+      });
+    }
+
+    audio?.addEventListener("ended", stop);
+    // Пауза извне (медиаклавиши). После смены src тоже приходит pause, но с currentTime 0 — его пропускаем.
+    audio?.addEventListener("pause", () => {
+      if (audio.currentTime > 0 && !audio.ended) stop();
+    });
+  </script>
 </section>

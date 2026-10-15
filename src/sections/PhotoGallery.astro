@@ -1,37 +1,67 @@
 ---
-import GallerySlider from "../components/GallerySlider.astro";
-import { photos } from "../data/photos";
+import { photos, type Photo } from "../data/photos";
+
+// Две ленты, идущие навстречу друг другу: чётные фото — в одной, нечётные — в другой.
+const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_, i) => i % 2 === 1)];
 ---
 
-<section id="photos" class="py-8 overflow-x-clip">
-
-    <h2 class="sr-only">Фото</h2>
-
-
-  <!-- full-bleed slider -->
-  <div class="mt-8 relative left-1/2 right-1/2 w-screen -ml-[50vw] -mr-[50vw] overflow-x-clip">
-    <GallerySlider images={photos} />
+<section id="photos" class="relative overflow-hidden py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl px-6" data-reveal>
+    <p class="eyebrow">Фото</p>
+    <h2 class="section-title mt-3">
+      Вживую это выглядит <span class="text-gradient-brand">так</span>
+    </h2>
   </div>
 
-  <!-- modal -->
+  <div class="mt-10 space-y-4" data-reveal style="--reveal-delay: 120ms">
+    {rows.map((row, rowIndex) => (
+      <div class="marquee" style={`--marquee-duration: ${90 + rowIndex * 25}s`}>
+        <div class="marquee-track gap-4 pr-4" data-direction={rowIndex === 1 ? "reverse" : undefined}>
+          {[false, true].map((clone) => (
+            <ul class="flex shrink-0 gap-4" data-clone={clone ? "" : undefined} aria-hidden={clone ? "true" : undefined}>
+              {row.map((photo) => (
+                <li class="shrink-0">
+                  <button
+                    type="button"
+                    class="block h-44 cursor-pointer overflow-hidden rounded-xl ring-1 ring-white/10 transition duration-300 hover:scale-[1.03] hover:ring-white/40 sm:h-56 lg:h-64"
+                    style={`background-color: ${photo.color}; aspect-ratio: ${photo.width} / ${photo.height}`}
+                    data-photo={photo.full}
+                    tabindex={clone ? -1 : undefined}
+                    aria-label="Открыть фото"
+                  >
+                    <img
+                      src={photo.thumb}
+                      alt="Казаки делают хиты — фото с концертов и съёмок"
+                      width={photo.width}
+                      height={photo.height}
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
   <dialog
-    class="backdrop:bg-black/80 bg-transparent p-0 m-0 max-w-none w-[80vw] h-[80svh]"
+    class="m-0 h-[90svh] w-[92vw] max-w-none bg-transparent p-0 backdrop:bg-black/85"
     data-gallery-modal
   >
     <div class="relative h-full w-full rounded-2xl border border-white/15 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur">
       <button
         type="button"
-        class="absolute right-4 top-4 z-50 rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20 cursor-pointer"
+        class="absolute right-4 top-4 z-50 cursor-pointer rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20"
         data-gallery-close
       >
         Закрыть
       </button>
 
-      <img
-        alt=""
-        class="h-full w-full rounded-2xl object-contain"
-        data-gallery-image
-      />
+      <img alt="" class="h-full w-full rounded-2xl object-contain" data-gallery-image />
     </div>
   </dialog>
 
@@ -61,8 +91,11 @@ import { photos } from "../data/photos";
       if (e.target === modal) close();
     });
 
-    window.addEventListener("gallery:open", ((e: CustomEvent) => {
-      open(e.detail?.src);
-    }) as EventListener);
+    for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-photo]")) {
+      btn.addEventListener("click", () => {
+        const src = btn.dataset.photo;
+        if (src) open(src);
+      });
+    }
   </script>
 </section>

@@ -2,23 +2,25 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../sections/Header.astro";
 import HeroVideo from "../sections/HeroVideo.astro";
-import SectionDivider from "../sections/Divider.astro";
-import Achivments from "../sections/Achivments.astro";
-import Footer from "../sections/Footer.astro";
+import Stats from "../sections/Stats.astro";
+import Ticker from "../sections/Ticker.astro";
+import Music from "../sections/Music.astro";
 import PhotoGallery from "../sections/PhotoGallery.astro";
 import VideoGallery from "../sections/VideoGallery.astro";
-import CallToAction from "../sections/CallToAction.astro";
-import Music from "../sections/Music.astro";
+import Contacts from "../sections/Contacts.astro";
+import Footer from "../sections/Footer.astro";
 ---
-<BaseLayout title="Казаки делают хиты">
+
+<BaseLayout title="Казаки делают хиты — казачьи каверы на популярные хиты">
   <Header />
   <main>
     <HeroVideo />
-    <Achivments />
+    <Stats />
+    <Ticker />
     <Music />
     <PhotoGallery />
     <VideoGallery />
-    <CallToAction />
-    <Footer />
+    <Contacts />
   </main>
+  <Footer />
 </BaseLayout>

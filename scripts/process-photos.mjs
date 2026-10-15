@@ -1,148 +1,121 @@
 // scripts/process-photos.mjs
+// Мастера фотографий лежат в raw-photos/ (в сборку не попадают).
+// Скрипт делает из них веб-версии в public/gallery/photo/:
+//   <name>.webp       — до 1600 px по длинной стороне (лайтбокс)
+//   <name>.thumb.webp — 640 px по высоте (лента на странице)
+// и перезаписывает src/data/photos.ts: размеры и доминирующий цвет для плейсхолдера.
+// Запуск: npm run photos:process
 import fs from "node:fs/promises";
 import path from "node:path";
-import readline from "node:readline/promises";
-import { stdin as input, stdout as output } from "node:process";
 import sharp from "sharp";
 
-const RAW_DIR = path.resolve("public/gallery/photo_raw");
+const RAW_DIR = path.resolve("raw-photos");
 const OUT_DIR = path.resolve("public/gallery/photo");
 const URL_PREFIX = "/gallery/photo";
 const PHOTOS_TS = path.resolve("src/data/photos.ts");
 
 const EXT = new Set([".jpg", ".jpeg", ".png", ".webp"]);
-const QUALITY = 90;
-const SCALE = 0.5;
+const FULL = { maxSide: 1600, quality: 75 };
+const THUMB = { height: 640, quality: 70 };
 
 const sanitizeBaseName = (name) => name.replace(/\s+/g, "_");
-
-const uniquePath = async (p) => {
-  try {
-    await fs.access(p);
-  } catch {
-    return p;
-  }
-  const dir = path.dirname(p);
-  const ext = path.extname(p);
-  const base = path.basename(p, ext);
-  for (let i = 2; i < 10_000; i++) {
-    const candidate = path.join(dir, `${base}_${i}${ext}`);
-    try {
-      await fs.access(candidate);
-    } catch {
-      return candidate;
-    }
-  }
-  throw new Error(`Cannot find unique name for: ${p}`);
-};
-
-const renameIfHasSpaces = async (fp) => {
-  const dir = path.dirname(fp);
-  const ext = path.extname(fp);
-  const base = path.basename(fp, ext);
-  if (!/\s/.test(base)) return fp;
-
-  const newBase = sanitizeBaseName(base);
-  let newPath = path.join(dir, `${newBase}${ext}`);
-  if (newPath === fp) return fp;
-
-  newPath = await uniquePath(newPath);
-  await fs.rename(fp, newPath);
-  return newPath;
-};
-
-const listRawFiles = async () => {
-  const entries = await fs.readdir(RAW_DIR, { withFileTypes: true }).catch(() => []);
-  return entries
-    .filter((e) => e.isFile())
-    .map((e) => e.name)
-    .filter((n) => EXT.has(path.extname(n).toLowerCase()))
-    .map((n) => path.join(RAW_DIR, n));
-};
-
+const toHex = (n) => n.toString(16).padStart(2, "0");
+const rgbToHex = ({ r, g, b }) => `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 const encodeUrlPath = (p) => p.split("/").map(encodeURIComponent).join("/");
 
-const readExistingPhotos = async () => {
-  try {
-    const src = await fs.readFile(PHOTOS_TS, "utf8");
-    const m = src.match(/export const photos\s*=\s*\[([\s\S]*?)\]\s*as const\s*;?/);
-    if (!m) return [];
-    const body = m[1];
-    return [...body.matchAll(/["'`](.*?)["'`]/g)].map((x) => x[1]).filter(Boolean);
-  } catch {
-    return [];
-  }
+const listRawFiles = async () => {
+  const entries = await fs.readdir(RAW_DIR, { withFileTypes: true });
+  return entries
+    .filter((e) => e.isFile() && EXT.has(path.extname(e.name).toLowerCase()))
+    .map((e) => path.join(RAW_DIR, e.name))
+    .sort();
 };
 
-const writePhotosTs = async (list) => {
-  await fs.mkdir(path.dirname(PHOTOS_TS), { recursive: true });
-  const lines = list.map((p) => `  "${p}",`).join("\n");
-  const content = `export const photos = [\n${lines}\n] as const;\n`;
-  await fs.writeFile(PHOTOS_TS, content, "utf8");
+const processOne = async (filePath) => {
+  const base = sanitizeBaseName(path.parse(filePath).name);
+  const fullName = `${base}.webp`;
+  const thumbName = `${base}.thumb.webp`;
+
+  const full = await sharp(filePath)
+    .rotate()
+    .resize({
+      width: FULL.maxSide,
+      height: FULL.maxSide,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ quality: FULL.quality })
+    .toFile(path.join(OUT_DIR, fullName));
+
+  await sharp(filePath)
+    .rotate()
+    .resize({ height: THUMB.height, fit: "inside", withoutEnlargement: true })
+    .webp({ quality: THUMB.quality })
+    .toFile(path.join(OUT_DIR, thumbName));
+
+  // Средний цвет кадра — фон плейсхолдера до загрузки картинки.
+  const { channels } = await sharp(filePath).stats();
+  const [r, g, b] = channels.map((c) => Math.round(c.mean));
+
+  return {
+    full: `${URL_PREFIX}/${encodeUrlPath(fullName)}`,
+    thumb: `${URL_PREFIX}/${encodeUrlPath(thumbName)}`,
+    width: full.width,
+    height: full.height,
+    color: rgbToHex({ r, g, b }),
+  };
+};
+
+// Объекты в несколько строк — так файл стабилен для prettier.
+const renderPhotosTs = (photos) => {
+  const rows = photos.map((p) =>
+    [
+      "  {",
+      `    full: "${p.full}",`,
+      `    thumb: "${p.thumb}",`,
+      `    width: ${p.width},`,
+      `    height: ${p.height},`,
+      `    color: "${p.color}",`,
+      "  },",
+    ].join("\n"),
+  );
+
+  return [
+    "// Сгенерировано scripts/process-photos.mjs — не править руками, перезапустить npm run photos:process.",
+    "export type Photo = {",
+    "  full: string;",
+    "  thumb: string;",
+    "  width: number;",
+    "  height: number;",
+    "  // Доминирующий цвет — фон плейсхолдера, пока грузится картинка.",
+    "  color: string;",
+    "};",
+    "",
+    "export const photos: Photo[] = [",
+    ...rows,
+    "];",
+    "",
+  ].join("\n");
 };
 
 const main = async () => {
-  await fs.mkdir(OUT_DIR, { recursive: true });
-
-  let files = await listRawFiles();
-  if (!files.length) {
-    console.log(`No images found in ${RAW_DIR}`);
+  const files = await listRawFiles();
+  if (files.length === 0) {
+    console.log(`No images in ${RAW_DIR}`);
     return;
   }
 
-  files = await Promise.all(files.map(renameIfHasSpaces));
+  await fs.rm(OUT_DIR, { recursive: true, force: true });
+  await fs.mkdir(OUT_DIR, { recursive: true });
 
-  const newUrls = [];
-
-  for (const fp of files) {
-    const meta = await sharp(fp).metadata();
-    if (!meta.width || !meta.height) {
-      console.warn(`Skip (cannot read size): ${fp}`);
-      continue;
-    }
-
-    const w = Math.max(1, Math.round(meta.width * SCALE));
-    const h = Math.max(1, Math.round(meta.height * SCALE));
-
-    const outBase = sanitizeBaseName(path.parse(fp).name);
-    const outName = `${outBase}.webp`;
-    const outPath = path.join(OUT_DIR, outName);
-
-    await sharp(fp)
-      .resize(w, h, { fit: "fill" })
-      .webp({ quality: QUALITY })
-      .toFile(outPath);
-
-    newUrls.push(`${URL_PREFIX}/${encodeUrlPath(outName)}`);
+  const photos = [];
+  for (const file of files) {
+    photos.push(await processOne(file));
+    console.log(path.basename(file));
   }
 
-  const existing = await readExistingPhotos();
-  const set = new Set(existing);
-  const merged = [...existing];
-
-  for (const u of newUrls) {
-    if (!set.has(u)) {
-      set.add(u);
-      merged.push(u);
-    }
-  }
-
-  await writePhotosTs(merged);
-
-  const rl = readline.createInterface({ input, output });
-  const ans = (await rl.question(`Delete originals from ${RAW_DIR}? [Y/n] `)).trim().toLowerCase();
-  rl.close();
-
-  const shouldDelete = ans === "" || ans === "y" || ans === "yes";
-  if (shouldDelete) {
-    await Promise.all(files.map((fp) => fs.unlink(fp)));
-    console.log(`Deleted ${files.length} originals.`);
-  } else {
-    console.log("Originals kept.");
-  }
-
-  console.log(`Optimized: ${newUrls.length}`);
-  console.log(`Output dir: ${OUT_DIR}`);
+  await fs.writeFile(PHOTOS_TS, renderPhotosTs(photos), "utf8");
+  console.log(`Photos: ${photos.length} → ${OUT_DIR}`);
   console.log(`Updated: ${PHOTOS_TS}`);
 };
 

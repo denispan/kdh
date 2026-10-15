@@ -1,4 +1,13 @@
-<section id="top" class="relative min-h-svh overflow-hidden -mt-[130px]">
+---
+import { tracks } from "../data/music";
+import { findRelease, latestRelease } from "../data/releases";
+
+// Плашка «Новый сингл» — самый свежий релиз из каталога, который есть на сайте.
+const latest = latestRelease(tracks.map((t) => t.title));
+const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === latest.id) : undefined;
+---
+
+<section id="top" class="relative flex min-h-svh flex-col overflow-hidden">
   <video
     class="absolute inset-0 h-full w-full object-cover object-top"
     autoplay
@@ -8,9 +17,43 @@
     preload="metadata"
     poster="/video/hero-poster.jpg"
   >
-    <!-- <source src="/video/hero.webm" type="video/webm" /> -->
+    <source src="/video/hero.webm" type="video/webm" />
     <source src="/video/hero.mp4" type="video/mp4" />
   </video>
 
-  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10" aria-hidden="true"></div>
+
+  <div class="relative z-10 mt-auto w-full">
+    <div class="mx-auto max-w-6xl px-6 pb-14 pt-40 sm:pb-20">
+      <!-- Первый экран без data-reveal: заголовок — LCP-элемент, он должен появиться сразу. -->
+      {latestTrack && (
+        <a
+          href="#music"
+          class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur transition hover:border-white/50"
+        >
+          <span class="h-2 w-2 rounded-full bg-brand-magenta shadow-[0_0_10px_var(--color-brand-magenta)]"></span>
+          Новый сингл — «{latestTrack.title}»
+        </a>
+      )}
+
+      <h1 class="mt-5 font-display text-[2.6rem] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+        Казаки <span class="text-gradient-brand">делают</span> хиты
+      </h1>
+
+      <p class="mt-5 max-w-2xl text-lg text-white/85 sm:text-xl md:text-2xl">
+        Беспрецедентный музыкальный проект: коллаборация современных ритмов
+        и&nbsp;народного вокального казачьего творчества
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#music" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Слушать
+        </a>
+        <a href="#videos" class="btn btn-ghost">Смотреть клипы</a>
+      </div>
+    </div>
+  </div>
 </section>

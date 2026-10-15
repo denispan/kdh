@@ -1,0 +1,28 @@
+---
+import Divider from "./Divider.astro";
+import { tracks } from "../data/music";
+
+// Бегущая строка с названиями песен. Декоративная: тот же список есть в секции «Музыка».
+const titles = tracks.map((t) => t.title);
+---
+
+<div class="bg-black" aria-hidden="true">
+  <Divider height={4} angle={90} />
+
+  <div class="marquee py-5" style="--marquee-duration: 60s">
+    <div class="marquee-track font-display text-2xl font-extrabold uppercase tracking-tight text-white/90 sm:text-3xl">
+      {[false, true].map((clone) => (
+        <ul class="flex shrink-0 items-center" data-clone={clone ? "" : undefined}>
+          {titles.map((title) => (
+            <li class="flex items-center whitespace-nowrap">
+              <span class="px-5">{title}</span>
+              <span class="text-brand-magenta">◆</span>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+
+  <Divider height={4} angle={90} />
+</div>

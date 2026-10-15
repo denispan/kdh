@@ -1,5 +1,7 @@
 ---
-const { height = 24 } = Astro.props;
+// Триколор-полоса. angle=175 — диагональная заливка для высоких разделителей,
+// angle=90 — горизонтальная линия (для тонких полос в 3–4 px).
+const { height = 24, angle = 175 } = Astro.props;
 ---
 
 <div aria-hidden="true" class="relative w-full overflow-hidden" style={`height:${height}px;`}>
@@ -7,7 +9,7 @@ const { height = 24 } = Astro.props;
     class="absolute inset-0"
     style={`
       background: linear-gradient(
-        175deg,
+        ${angle}deg,
         #ffffff 0%,
         #ffffff 28%,
         #ffffff 33%,

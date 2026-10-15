@@ -1,59 +1,194 @@
 ---
 // Универсальный Embla-слайдер: слайды передаются через <slot />.
-// slideClass задаёт ширину слайда (flex-basis) для конкретного использования.
-// loop=false: слайдер стоит на первом слайде и не перескакивает с начала в конец.
-// perSlide/cols — сколько карточек и колонок на слайде для [base, sm, lg].
-// Рядов получается perSlide / cols; пересборка слайдов идёт на клиенте при смене брейкпоинта.
-const {
-  slideClass = "flex-[0_0_66.666%]",
-  loop = false,
-  perSlide = null,
-  cols = null,
-} = Astro.props;
+// loop=false: стоит на первом слайде и не перескакивает с начала в конец.
+// perSlide/cols — сколько карточек и колонок на слайде для [base, sm, lg];
+// рядов получается perSlide / cols, пересборка слайдов идёт на клиенте при смене брейкпоинта.
+const { loop = false, perSlide = null, cols = null } = Astro.props;
 ---
 
 <div
-  class="select-none w-full relative"
+  class="relative w-full select-none"
   data-slider
   data-loop={loop ? "true" : "false"}
   data-per-slide={perSlide ? perSlide.join(",") : undefined}
   data-cols={cols ? cols.join(",") : undefined}
 >
-  <div class="overflow-hidden w-full touch-pan-y" data-embla-viewport>
+  <div class="w-full touch-pan-y overflow-hidden" data-embla-viewport>
     <!-- items-start: неполный слайд не растягивается по высоте самого высокого -->
-    <div class="flex items-start gap-6" data-embla-container data-slide-class={slideClass}>
+    <div class="flex items-start gap-6" data-embla-container>
       <slot />
     </div>
   </div>
 
-  <button
-    type="button"
-    class="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45 cursor-pointer"
-    data-embla-prev
-    aria-label="Назад"
-  >
-    ←
-  </button>
+  <!-- Управление под слайдами: точки слева, стрелки справа. На узких экранах не перекрывает карточки. -->
+  <div class="mt-6 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2" data-embla-dots aria-hidden="true"></div>
 
-  <button
-    type="button"
-    class="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-4 py-3 text-sm text-white backdrop-blur transition hover:bg-black/45 cursor-pointer"
-    data-embla-next
-    aria-label="Вперёд"
-  >
-    →
-  </button>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-white/50 hover:bg-white/10 disabled:cursor-default disabled:opacity-30 disabled:hover:border-white/20 disabled:hover:bg-white/5"
+        data-embla-prev
+        aria-label="Назад"
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7" />
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-white/50 hover:bg-white/10 disabled:cursor-default disabled:opacity-30 disabled:hover:border-white/20 disabled:hover:bg-white/5"
+        data-embla-next
+        aria-label="Вперёд"
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
-  import EmblaCarousel from "embla-carousel";
+  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel";
 
-  document.querySelectorAll<HTMLElement>("[data-slider]").forEach((root) => {
-    const viewport = root.querySelector<HTMLElement>("[data-embla-viewport]");
-    if (!viewport) return;
+  const COLS_CLASS: Record<number, string> = {
+    1: "grid-cols-1",
+    2: "grid-cols-2",
+    3: "grid-cols-3",
+  };
 
+  const SWIPE_THRESHOLD = 50;
+  const WHEEL_COOLDOWN_MS = 300;
+
+  // Без loop стрелка на краю ничего не делает — блокируем её, чтобы это было видно.
+  const setupArrows = (root: HTMLElement, embla: EmblaCarouselType) => {
     const prevBtn = root.querySelector<HTMLButtonElement>("[data-embla-prev]");
     const nextBtn = root.querySelector<HTMLButtonElement>("[data-embla-next]");
+
+    prevBtn?.addEventListener("click", () => embla.scrollPrev());
+    nextBtn?.addEventListener("click", () => embla.scrollNext());
+
+    const sync = () => {
+      if (prevBtn) prevBtn.disabled = !embla.canScrollPrev();
+      if (nextBtn) nextBtn.disabled = !embla.canScrollNext();
+    };
+
+    sync();
+    embla.on("select", sync).on("reInit", sync);
+  };
+
+  // Точки: активная — вытянутая с градиентом бренда.
+  const setupDots = (root: HTMLElement, embla: EmblaCarouselType) => {
+    const container = root.querySelector<HTMLElement>("[data-embla-dots]");
+    if (!container) return;
+
+    const render = () => {
+      const dots = embla.scrollSnapList().map((_, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.tabIndex = -1;
+        dot.className = "h-1.5 rounded-full bg-white/30 transition-all duration-300 cursor-pointer";
+        dot.addEventListener("click", () => embla.scrollTo(index));
+        return dot;
+      });
+      container.replaceChildren(...dots);
+    };
+
+    const sync = () => {
+      const selected = embla.selectedScrollSnap();
+      [...container.children].forEach((dot, index) => {
+        const active = index === selected;
+        dot.classList.toggle("w-6", active);
+        dot.classList.toggle("bg-gradient-brand", active);
+        dot.classList.toggle("w-1.5", !active);
+        dot.classList.toggle("bg-white/30", !active);
+      });
+    };
+
+    render();
+    sync();
+    embla.on("select", sync).on("reInit", () => {
+      render();
+      sync();
+    });
+  };
+
+  // Горизонтальный скролл колесом/тачпадом листает слайды.
+  const setupWheel = (viewport: HTMLElement, embla: EmblaCarouselType) => {
+    let cooldown = false;
+
+    viewport.addEventListener(
+      "wheel",
+      (e: WheelEvent) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
+        e.preventDefault();
+        if (cooldown || Math.abs(e.deltaX) < SWIPE_THRESHOLD) return;
+
+        cooldown = true;
+        if (e.deltaX > 0) embla.scrollNext();
+        else embla.scrollPrev();
+        window.setTimeout(() => {
+          cooldown = false;
+        }, WHEEL_COOLDOWN_MS);
+      },
+      { passive: false },
+    );
+  };
+
+  // Пересборка слайдов под брейкпоинт: рядов всегда одинаково, меняется число колонок.
+  const setupRegroup = (root: HTMLElement, container: HTMLElement, embla: EmblaCarouselType) => {
+    const perSlide = (root.dataset.perSlide ?? "").split(",").map(Number);
+    const colsPerBp = (root.dataset.cols ?? "").split(",").map(Number);
+    if (perSlide.length !== 3 || colsPerBp.length !== 3) return;
+
+    // Карточки, как их отрендерил сервер (уже сгруппированные в слайды).
+    const cards = [...container.children].flatMap((child) =>
+      child.hasAttribute("data-slide-group") ? [...child.children] : [child],
+    );
+
+    const smQuery = window.matchMedia("(min-width: 640px)");
+    const lgQuery = window.matchMedia("(min-width: 1024px)");
+
+    const breakpoint = () => {
+      if (lgQuery.matches) return 2;
+      if (smQuery.matches) return 1;
+      return 0;
+    };
+
+    let currentBp = -1;
+
+    const relayout = () => {
+      const bp = breakpoint();
+      if (bp === currentBp) return;
+      currentBp = bp;
+
+      const size = perSlide[bp];
+      const slides: HTMLElement[] = [];
+
+      for (let i = 0; i < cards.length; i += size) {
+        const slide = document.createElement("div");
+        slide.setAttribute("data-slide-group", "");
+        slide.className = `grid min-w-0 flex-[0_0_100%] gap-4 ${COLS_CLASS[colsPerBp[bp]]}`;
+        slide.append(...cards.slice(i, i + size));
+        slides.push(slide);
+      }
+
+      container.replaceChildren(...slides);
+      embla.reInit();
+    };
+
+    relayout();
+    smQuery.addEventListener("change", relayout);
+    lgQuery.addEventListener("change", relayout);
+    window.addEventListener("resize", relayout);
+  };
+
+  const init = (root: HTMLElement) => {
+    const viewport = root.querySelector<HTMLElement>("[data-embla-viewport]");
+    const container = root.querySelector<HTMLElement>("[data-embla-container]");
+    if (!viewport || !container) return;
 
     const embla = EmblaCarousel(viewport, {
       loop: root.dataset.loop === "true",
@@ -64,96 +199,13 @@ const {
       watchDrag: true,
     });
 
-    prevBtn?.addEventListener("click", () => embla.scrollPrev());
-    nextBtn?.addEventListener("click", () => embla.scrollNext());
+    setupArrows(root, embla);
+    setupDots(root, embla);
+    setupWheel(viewport, embla);
+    setupRegroup(root, container, embla);
+  };
 
-    // Без loop стрелка на краю ничего не делает — гасим её, чтобы это было видно.
-    const syncArrows = () => {
-      prevBtn?.classList.toggle("opacity-30", !embla.canScrollPrev());
-      prevBtn?.classList.toggle("pointer-events-none", !embla.canScrollPrev());
-      nextBtn?.classList.toggle("opacity-30", !embla.canScrollNext());
-      nextBtn?.classList.toggle("pointer-events-none", !embla.canScrollNext());
-    };
-
-    syncArrows();
-    embla.on("select", syncArrows).on("reInit", syncArrows);
-
-    // Пересборка слайдов под брейкпоинт: рядов всегда одинаково, меняется число колонок.
-    const perSlide = (root.dataset.perSlide ?? "").split(",").map(Number);
-    const colsPerBp = (root.dataset.cols ?? "").split(",").map(Number);
-    const container = viewport.firstElementChild as HTMLElement | null;
-
-    if (perSlide.length === 3 && colsPerBp.length === 3 && container) {
-      const colsClass: Record<number, string> = {
-        1: "grid-cols-1",
-        2: "grid-cols-2",
-        3: "grid-cols-3",
-      };
-
-      // Карточки, как их отрендерил сервер (уже сгруппированные в слайды).
-      const cards = [...container.children].flatMap((child) =>
-        child.hasAttribute("data-slide-group") ? [...child.children] : [child],
-      );
-
-      const smQuery = window.matchMedia("(min-width: 640px)");
-      const lgQuery = window.matchMedia("(min-width: 1024px)");
-
-      const breakpoint = () => (lgQuery.matches ? 2 : smQuery.matches ? 1 : 0);
-
-      let currentBp = -1;
-
-      const relayout = () => {
-        const bp = breakpoint();
-        if (bp === currentBp) return;
-        currentBp = bp;
-
-        const size = perSlide[bp];
-        const slides: HTMLElement[] = [];
-
-        for (let i = 0; i < cards.length; i += size) {
-          const slide = document.createElement("div");
-          slide.setAttribute("data-slide-group", "");
-          slide.className = `min-w-0 flex-[0_0_100%] grid gap-6 ${colsClass[colsPerBp[bp]]}`;
-          slide.append(...cards.slice(i, i + size));
-          slides.push(slide);
-        }
-
-        container.replaceChildren(...slides);
-        embla.reInit();
-      };
-
-      relayout();
-      smQuery.addEventListener("change", relayout);
-      lgQuery.addEventListener("change", relayout);
-      window.addEventListener("resize", relayout);
-    }
-
-    let wheelTimeout: number | null = null;
-    let isScrolling = false;
-    const SWIPE_THRESHOLD = 50;
-
-    viewport.addEventListener("wheel", (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
-
-      e.preventDefault();
-      if (isScrolling) return;
-
-      if (Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
-        isScrolling = true;
-
-        if (e.deltaX > 0) {
-          embla.scrollNext();
-        } else {
-          embla.scrollPrev();
-        }
-
-        if (wheelTimeout !== null) clearTimeout(wheelTimeout);
-
-        wheelTimeout = window.setTimeout(() => {
-          isScrolling = false;
-          wheelTimeout = null;
-        }, 300);
-      }
-    }, { passive: false });
-  });
+  for (const root of document.querySelectorAll<HTMLElement>("[data-slider]")) {
+    init(root);
+  }
 </script>

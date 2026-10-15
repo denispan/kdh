@@ -1,5 +1,5 @@
 ---
-// src/components/Header.astro
+// src/sections/Header.astro
 const navLinks = [
   { href: "#music", label: "Музыка" },
   { href: "#photos", label: "Фото" },
@@ -8,96 +8,104 @@ const navLinks = [
 ];
 ---
 
-<header class="absolute inset-x-0 top-0 z-50 w-full" data-header>
-  <!-- один фон для всего хедера + выпадашки  -->
-    <div class="mx-auto max-w-6xl px-6 pt-[10px] pb-3">
-      <div class="hidden md:flex h-16 items-center justify-center">
-        <nav class="flex items-center gap-32 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinks.map((l) => (
-            <a class="hover:opacity-80" href={l.href}>
-              {l.label}
-            </a>
-          ))}
-        </nav>
-      </div>
+<header
+  class="fixed inset-x-0 top-0 z-50 w-full transition-[background-color,box-shadow] duration-300 data-[menu-open=true]:bg-black/85 data-[menu-open=true]:backdrop-blur-md data-[scrolled=true]:bg-black/70 data-[scrolled=true]:shadow-[0_1px_0_rgba(255,255,255,0.08)] data-[scrolled=true]:backdrop-blur-md"
+  data-header
+  data-scrolled="false"
+  data-menu-open="false"
+>
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="flex h-16 items-center justify-between gap-6">
+      <a href="/" class="flex h-9 shrink-0 items-center" aria-label="Казаки делают хиты — на главную">
+        <img
+          src="/logo.svg"
+          alt="Казаки делают хиты"
+          width="282"
+          height="71"
+          class="h-full w-auto"
+          decoding="async"
+          loading="eager"
+        />
+      </a>
 
-      <div class="grid md:hidden h-16 grid-cols-3 items-center">
-        <div></div>
+      <nav
+        class="hidden items-center gap-8 font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-white/85 md:flex lg:gap-12"
+        aria-label="Разделы сайта"
+      >
+        {navLinks.map((l) => (
+          <a class="transition hover:text-white hover:[text-shadow:0_0_18px_rgba(229,48,143,0.9)]" href={l.href}>
+            {l.label}
+          </a>
+        ))}
+      </nav>
 
-        <a href="#" class="mx-auto inline-flex h-full items-center justify-center">
-          <img src="/logo.svg" alt="Logo" class="h-full w-auto" decoding="async" loading="eager" />
-        </a>
+      <a href="#music" class="btn btn-primary hidden px-5 py-2.5 md:inline-flex">Слушать</a>
 
-        <div class="flex justify-end">
-          <button
-            type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10"
-            aria-label="Меню"
-            aria-expanded="false"
-            data-menu-toggle
-          >
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-          </button>
-        </div>
-      </div>
+      <button
+        type="button"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10 hover:bg-white/10 md:hidden"
+        aria-label="Меню"
+        aria-expanded="false"
+        data-menu-toggle
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
     </div>
+  </div>
 
-    <!-- убираем border-t и отдельный bg у меню, делаем тот же фон что и у шапки -->
-    <div class="hidden md:hidden" data-mobile-menu>
-      <div class="mx-auto max-w-6xl px-6 pb-4">
-        <nav class="flex flex-col gap-4 text-sm font-bold uppercase tracking-[0.22em] text-white">
-          {navLinks.map((l) => (
-            <a class="hover:opacity-80" href={l.href} data-menu-link>
-              {l.label}
-            </a>
-          ))}
-        </nav>
-      </div>
+  <div class="hidden md:hidden" data-mobile-menu>
+    <div class="mx-auto max-w-6xl px-6 pb-6">
+      <nav class="flex flex-col gap-4 font-display text-sm font-semibold uppercase tracking-[0.22em] text-white" aria-label="Разделы сайта">
+        {navLinks.map((l) => (
+          <a class="py-1 hover:text-brand-magenta" href={l.href} data-menu-link>
+            {l.label}
+          </a>
+        ))}
+      </nav>
+      <a href="#music" class="btn btn-primary mt-6 w-full" data-menu-link>Слушать</a>
     </div>
+  </div>
 </header>
 
 <script>
-  const header = document.querySelector("[data-header]");
-  const toggle = header?.querySelector("[data-menu-toggle]");
-  const menu = header?.querySelector("[data-mobile-menu]");
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const toggle = header?.querySelector<HTMLButtonElement>("[data-menu-toggle]") ?? null;
+  const menu = header?.querySelector<HTMLElement>("[data-mobile-menu]") ?? null;
 
-  const closeMenu = () => {
-    menu?.classList.add("hidden");
-    toggle?.setAttribute("aria-expanded", "false");
-  };
+  const isMenuOpen = () => menu !== null && !menu.classList.contains("hidden");
 
-  const toggleMenu = () => {
-    if (!menu || !toggle) return;
-    const isOpen = !menu.classList.contains("hidden");
-    if (isOpen) closeMenu();
-    else {
-      menu.classList.remove("hidden");
-      toggle.setAttribute("aria-expanded", "true");
-    }
+  const setMenu = (open: boolean) => {
+    if (!menu || !toggle || !header) return;
+    menu.classList.toggle("hidden", !open);
+    toggle.setAttribute("aria-expanded", String(open));
+    header.setAttribute("data-menu-open", String(open));
   };
 
   toggle?.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleMenu();
+    setMenu(!isMenuOpen());
   });
 
-  header?.querySelectorAll("[data-menu-link]").forEach((a) => {
-    a.addEventListener("click", closeMenu);
+  header?.querySelectorAll("[data-menu-link]").forEach((link) => {
+    link.addEventListener("click", () => setMenu(false));
   });
 
   document.addEventListener("click", (e) => {
-    if (!header || !menu) return;
-    if (!menu.classList.contains("opacity-100")) return;
-
-    const target = e.target;
-    if (!(target instanceof Node)) return;
-
-    if (!header.contains(target)) closeMenu();
+    if (!header || !isMenuOpen()) return;
+    if (e.target instanceof Node && !header.contains(e.target)) setMenu(false);
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
+    if (e.key === "Escape") setMenu(false);
   });
+
+  // Прозрачная шапка поверх видео → тёмная плашка после прокрутки.
+  const updateScrolled = () => {
+    header?.setAttribute("data-scrolled", String(window.scrollY > 24));
+  };
+
+  updateScrolled();
+  window.addEventListener("scroll", updateScrolled, { passive: true });
 </script>
