@@ -1,4 +1,4 @@
-// Обложки, цвета и превью из Apple Music (генерируются scripts/fetch-releases.mjs).
+// Обложки и превью из Apple Music (генерируются scripts/fetch-releases.mjs).
 import releasesJson from "./releases.json";
 
 export type Release = {
@@ -6,8 +6,6 @@ export type Release = {
   title: string;
   releaseDate: string;
   cover: string;
-  // Цвет фона обложки — им красится карточка трека.
-  color: string;
   // 30-секундное превью (m4a) с CDN Apple.
   preview: string;
   apple: string;

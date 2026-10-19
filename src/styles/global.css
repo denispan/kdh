@@ -46,25 +46,10 @@
   --breakpoint-xxs: 320px;
 
   --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
-
-  /* Цвета бренда: градиент логотипа (красный → маджента → синий)
-     и заливки обложек синглов. */
-  --color-brand-red: #e3263d;
-  --color-brand-magenta: #e5308f;
-  --color-brand-blue: #2a4ad9;
-  --color-brand-cyan: #5ccbe0;
-  --color-brand-yellow: #f7e52b;
-  --color-brand-purple: #2b0f66;
 }
 
-:root {
-  --gradient-brand: linear-gradient(
-    100deg,
-    var(--color-brand-red) 0%,
-    var(--color-brand-magenta) 45%,
-    var(--color-brand-blue) 100%
-  );
-}
+/* Палитра сайта — только чёрный, белый и прозрачности белого.
+   Цвет на странице дают сами материалы: видео, фото, обложки, логотип. */
 
 html {
   height: 100%;
@@ -107,19 +92,6 @@ body {
 
 /* Слой components проигрывает утилитам: утилиты в разметке переопределяют эти классы. */
 @layer components {
-  /* ---------- Градиент логотипа ---------- */
-
-  .bg-gradient-brand {
-    background-image: var(--gradient-brand);
-  }
-
-  .text-gradient-brand {
-    background-image: var(--gradient-brand);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
-
   /* ---------- Кнопки ---------- */
 
   .btn {
@@ -127,18 +99,7 @@ body {
   }
 
   .btn-primary {
-    @apply text-white shadow-[0_10px_30px_-10px_rgba(229,48,143,0.8)] hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-10px_rgba(229,48,143,0.95)] active:translate-y-0;
-    background-image: var(--gradient-brand);
-    background-size: 150% 100%;
-    background-position: 0% 50%;
-    transition:
-      background-position 0.5s ease,
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .btn-primary:hover {
-    background-position: 100% 50%;
+    @apply bg-white text-black hover:-translate-y-0.5 hover:bg-white/90 active:translate-y-0;
   }
 
   .btn-ghost {

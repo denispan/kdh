@@ -101,7 +101,7 @@ const { loop = false, perSlide = null, cols = null } = Astro.props;
       [...container.children].forEach((dot, index) => {
         const active = index === selected;
         dot.classList.toggle("w-6", active);
-        dot.classList.toggle("bg-gradient-brand", active);
+        dot.classList.toggle("bg-white", active);
         dot.classList.toggle("w-1.5", !active);
         dot.classList.toggle("bg-white/30", !active);
       });

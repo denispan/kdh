@@ -4,7 +4,6 @@
     "title": "Когда мы были на войне",
     "releaseDate": "2026-10-09T12:00:00Z",
     "cover": "/covers/6817024814.webp",
-    "color": "#bfcfeb",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/15/5e/82/155e82d7-b25f-cd5a-2873-f32d34920bee/mzaf_16737888941728620826.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%BC%D1%8B-%D0%B1%D1%8B%D0%BB%D0%B8-%D0%BD%D0%B0-%D0%B2%D0%BE%D0%B9%D0%BD%D0%B5/6817024813?i=6817024814&uo=4"
   },
@@ -13,7 +12,6 @@
     "title": "Не для меня",
     "releaseDate": "2026-10-02T12:00:00Z",
     "cover": "/covers/6815310910.webp",
-    "color": "#beceea",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b3/a9/b5/b3a9b5d1-12e7-c346-d006-205ffc2a4cbd/mzaf_6096916884072208004.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BD%D0%B5-%D0%B4%D0%BB%D1%8F-%D0%BC%D0%B5%D0%BD%D1%8F/6815310847?i=6815310910&uo=4"
   },
@@ -22,7 +20,6 @@
     "title": "Ой то не вечер",
     "releaseDate": "2026-09-25T12:00:00Z",
     "cover": "/covers/6814498456.webp",
-    "color": "#bfd0ea",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/14/78/35/147835be-6e36-effe-5cc1-b0fefd8667a5/mzaf_6229020706059168075.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BE%D0%B9-%D1%82%D0%BE-%D0%BD%D0%B5-%D0%B2%D0%B5%D1%87%D0%B5%D1%80/6814498455?i=6814498456&uo=4"
   },
@@ -31,7 +28,6 @@
     "title": "Любо, братцы, любо",
     "releaseDate": "2026-09-18T12:00:00Z",
     "cover": "/covers/6809712043.webp",
-    "color": "#bfd1ea",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/f6/e5/f3/f6e5f386-d7e6-a030-80a5-4b898b77a4a8/mzaf_11543992413988350594.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BB%D1%8E%D0%B1%D0%BE-%D0%B1%D1%80%D0%B0%D1%82%D1%86%D1%8B-%D0%BB%D1%8E%D0%B1%D0%BE/6809712042?i=6809712043&uo=4"
   },
@@ -40,7 +36,6 @@
     "title": "Ойся",
     "releaseDate": "2026-09-14T12:00:00Z",
     "cover": "/covers/6807767872.webp",
-    "color": "#c0d0ea",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e0/5c/3e/e05c3ed8-6d7a-484e-e65a-9b61f1723d63/mzaf_2440988378521366282.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BE%D0%B9%D1%81%D1%8F/6807767868?i=6807767872&uo=4"
   },
@@ -49,7 +44,6 @@
     "title": "Кровь горячая",
     "releaseDate": "2026-07-24T12:00:00Z",
     "cover": "/covers/6794302951.webp",
-    "color": "#ff3541",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/7b/5a/44/7b5a44fd-35c8-3971-c922-fffdba4b63ac/mzaf_14268748641522115984.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BA%D1%80%D0%BE%D0%B2%D1%8C-%D0%B3%D0%BE%D1%80%D1%8F%D1%87%D0%B0%D1%8F/6794302947?i=6794302951&uo=4"
   },
@@ -58,97 +52,86 @@
     "title": "Если ты со мной",
     "releaseDate": "2025-10-30T12:00:00Z",
     "cover": "/covers/1849161241.webp",
-    "color": "#977fd7",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a2/0a/06/a20a0622-e3a6-0b34-117d-c92abf294f36/mzaf_9546043038712175596.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%B5%D1%81%D0%BB%D0%B8-%D1%82%D1%8B-%D1%81%D0%BE-%D0%BC%D0%BD%D0%BE%D0%B9/1849161239?i=1849161241&uo=4"
-  },
-  {
-    "id": 1849161217,
-    "title": "У тебя есть я",
-    "releaseDate": "2025-10-30T12:00:00Z",
-    "cover": "/covers/1849161217.webp",
-    "color": "#e58a1f",
-    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/07/03/17/07031772-1490-a853-b11f-4785e6a0c90f/mzaf_6747926065721696468.plus.aac.p.m4a",
-    "apple": "https://music.apple.com/ru/album/%D1%83-%D1%82%D0%B5%D0%B1%D1%8F-%D0%B5%D1%81%D1%82%D1%8C-%D1%8F/1849161216?i=1849161217&uo=4"
   },
   {
     "id": 1849161902,
     "title": "Ледяное сердце",
     "releaseDate": "2025-10-30T12:00:00Z",
     "cover": "/covers/1849161902.webp",
-    "color": "#5deb5b",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d0/13/f3/d013f372-652e-6bee-5b37-759d88d1314c/mzaf_13174449422122134889.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BB%D0%B5%D0%B4%D1%8F%D0%BD%D0%BE%D0%B5-%D1%81%D0%B5%D1%80%D0%B4%D1%86%D0%B5/1849161901?i=1849161902&uo=4"
   },
   {
-    "id": 1849487306,
-    "title": "Желанная",
+    "id": 1849161217,
+    "title": "У тебя есть я",
     "releaseDate": "2025-10-30T12:00:00Z",
-    "cover": "/covers/1849487306.webp",
-    "color": "#6cd9c6",
-    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/c1/3a/76/c13a76e8-2e79-338d-c84b-0ebd8d301e44/mzaf_7834843460939221240.plus.aac.p.m4a",
-    "apple": "https://music.apple.com/ru/album/%D0%B6%D0%B5%D0%BB%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F/1849487305?i=1849487306&uo=4"
+    "cover": "/covers/1849161217.webp",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/07/03/17/07031772-1490-a853-b11f-4785e6a0c90f/mzaf_6747926065721696468.plus.aac.p.m4a",
+    "apple": "https://music.apple.com/ru/album/%D1%83-%D1%82%D0%B5%D0%B1%D1%8F-%D0%B5%D1%81%D1%82%D1%8C-%D1%8F/1849161216?i=1849161217&uo=4"
   },
   {
     "id": 1849161634,
     "title": "Грею счастье",
     "releaseDate": "2025-10-30T12:00:00Z",
     "cover": "/covers/1849161634.webp",
-    "color": "#d8f05e",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/6d/b7/7f/6db77fbb-d033-9d6d-38df-96bf9f983444/mzaf_7737503265735185437.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%B3%D1%80%D0%B5%D1%8E-%D1%81%D1%87%D0%B0%D1%81%D1%82%D1%8C%D0%B5/1849161630?i=1849161634&uo=4"
+  },
+  {
+    "id": 1849487306,
+    "title": "Желанная",
+    "releaseDate": "2025-10-30T12:00:00Z",
+    "cover": "/covers/1849487306.webp",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/c1/3a/76/c13a76e8-2e79-338d-c84b-0ebd8d301e44/mzaf_7834843460939221240.plus.aac.p.m4a",
+    "apple": "https://music.apple.com/ru/album/%D0%B6%D0%B5%D0%BB%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F/1849487305?i=1849487306&uo=4"
   },
   {
     "id": 1849359454,
     "title": "На берегу безымянной реки",
     "releaseDate": "2025-10-30T12:00:00Z",
     "cover": "/covers/1849359454.webp",
-    "color": "#f4bfd9",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/32/63/1a/32631a21-89c1-e3b1-4995-5d6681577b12/mzaf_2011529922869994463.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BD%D0%B0-%D0%B1%D0%B5%D1%80%D0%B5%D0%B3%D1%83-%D0%B1%D0%B5%D0%B7%D1%8B%D0%BC%D1%8F%D0%BD%D0%BD%D0%BE%D0%B9-%D1%80%D0%B5%D0%BA%D0%B8/1849359453?i=1849359454&uo=4"
-  },
-  {
-    "id": 1847918197,
-    "title": "Выше",
-    "releaseDate": "2025-10-28T12:00:00Z",
-    "cover": "/covers/1847918197.webp",
-    "color": "#f36f60",
-    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d2/3b/3b/d23b3b37-e84a-3e7a-1e43-d67b8780752a/mzaf_14193897841764308980.plus.aac.p.m4a",
-    "apple": "https://music.apple.com/ru/album/%D0%B2%D1%8B%D1%88%D0%B5/1847918193?i=1847918197&uo=4"
   },
   {
     "id": 1847918335,
     "title": "Туда",
     "releaseDate": "2025-10-28T12:00:00Z",
     "cover": "/covers/1847918335.webp",
-    "color": "#f8d45a",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/52/23/46/522346f9-9b9a-0ed2-84ef-79d3bb94afbf/mzaf_7357645750255359003.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D1%82%D1%83%D0%B4%D0%B0/1847918334?i=1847918335&uo=4"
-  },
-  {
-    "id": 1848112010,
-    "title": "Всё, что в жизни есть у меня",
-    "releaseDate": "2025-10-28T12:00:00Z",
-    "cover": "/covers/1848112010.webp",
-    "color": "#f04042",
-    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/dd/75/c4/dd75c430-195e-e909-23fa-9489a34fc804/mzaf_12342720111864343152.plus.aac.p.m4a",
-    "apple": "https://music.apple.com/ru/album/%D0%B2%D1%81%D1%91-%D1%87%D1%82%D0%BE-%D0%B2-%D0%B6%D0%B8%D0%B7%D0%BD%D0%B8-%D0%B5%D1%81%D1%82%D1%8C-%D1%83-%D0%BC%D0%B5%D0%BD%D1%8F/1848112002?i=1848112010&uo=4"
   },
   {
     "id": 1848134737,
     "title": "Полчаса",
     "releaseDate": "2025-10-28T12:00:00Z",
     "cover": "/covers/1848134737.webp",
-    "color": "#387af4",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/83/1a/a6/831aa665-102d-efd9-8db5-9e47ea71f369/mzaf_12741700872999938238.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BF%D0%BE%D0%BB%D1%87%D0%B0%D1%81%D0%B0/1848134736?i=1848134737&uo=4"
+  },
+  {
+    "id": 1847918197,
+    "title": "Выше",
+    "releaseDate": "2025-10-28T12:00:00Z",
+    "cover": "/covers/1847918197.webp",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d2/3b/3b/d23b3b37-e84a-3e7a-1e43-d67b8780752a/mzaf_14193897841764308980.plus.aac.p.m4a",
+    "apple": "https://music.apple.com/ru/album/%D0%B2%D1%8B%D1%88%D0%B5/1847918193?i=1847918197&uo=4"
+  },
+  {
+    "id": 1848112010,
+    "title": "Всё, что в жизни есть у меня",
+    "releaseDate": "2025-10-28T12:00:00Z",
+    "cover": "/covers/1848112010.webp",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/dd/75/c4/dd75c430-195e-e909-23fa-9489a34fc804/mzaf_12342720111864343152.plus.aac.p.m4a",
+    "apple": "https://music.apple.com/ru/album/%D0%B2%D1%81%D1%91-%D1%87%D1%82%D0%BE-%D0%B2-%D0%B6%D0%B8%D0%B7%D0%BD%D0%B8-%D0%B5%D1%81%D1%82%D1%8C-%D1%83-%D0%BC%D0%B5%D0%BD%D1%8F/1848112002?i=1848112010&uo=4"
   },
   {
     "id": 1778428037,
     "title": "Ты сделана из огня",
     "releaseDate": "2024-11-07T12:00:00Z",
     "cover": "/covers/1778428037.webp",
-    "color": "#f2d606",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/51/34/96/513496d5-6dcb-4659-c730-9b286a04465a/mzaf_2341511771469760265.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D1%82%D1%8B-%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D0%BD%D0%B0-%D0%B8%D0%B7-%D0%BE%D0%B3%D0%BD%D1%8F/1778428036?i=1778428037&uo=4"
   },
@@ -157,7 +140,6 @@
     "title": "Ребята с нашего двора",
     "releaseDate": "2024-11-06T12:00:00Z",
     "cover": "/covers/1776808152.webp",
-    "color": "#165bf4",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a8/6e/25/a86e2565-d941-0f61-c019-d3350b49af95/mzaf_14983176852258497573.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D1%80%D0%B5%D0%B1%D1%8F%D1%82%D0%B0-%D1%81-%D0%BD%D0%B0%D1%88%D0%B5%D0%B3%D0%BE-%D0%B4%D0%B2%D0%BE%D1%80%D0%B0/1776808151?i=1776808152&uo=4"
   },
@@ -166,7 +148,6 @@
     "title": "Штрихи",
     "releaseDate": "2024-11-06T12:00:00Z",
     "cover": "/covers/1776808048.webp",
-    "color": "#ea6834",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/14/a5/c9/14a5c948-3a54-381a-cea1-ccff1628b9f3/mzaf_15829380880019548658.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D1%88%D1%82%D1%80%D0%B8%D1%85%D0%B8/1776808047?i=1776808048&uo=4"
   },
@@ -175,7 +156,6 @@
     "title": "Гудбай, Америка",
     "releaseDate": "2024-11-05T12:00:00Z",
     "cover": "/covers/1776808020.webp",
-    "color": "#ee3c30",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0c/65/ce/0c65ce84-619a-11d2-dfcb-0d4979d7397c/mzaf_10253651011578236637.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%B3%D1%83%D0%B4%D0%B1%D0%B0%D0%B9-%D0%B0%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B0/1776808019?i=1776808020&uo=4"
   },
@@ -184,7 +164,6 @@
     "title": "Где-то",
     "releaseDate": "2024-10-31T12:00:00Z",
     "cover": "/covers/1776808016.webp",
-    "color": "#6f0bab",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f6/1d/98/f61d985f-4f91-0bde-d310-88d11639a0c8/mzaf_7623758972969784401.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%B3%D0%B4%D0%B5-%D1%82%D0%BE/1776808014?i=1776808016&uo=4"
   },
@@ -193,7 +172,6 @@
     "title": "Ничего не бойся",
     "releaseDate": "2024-10-30T12:00:00Z",
     "cover": "/covers/1776807927.webp",
-    "color": "#12d6b0",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/eb/36/25/eb36257b-fa0f-f76a-8c6e-1de025920233/mzaf_12818559293096895301.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BD%D0%B8%D1%87%D0%B5%D0%B3%D0%BE-%D0%BD%D0%B5-%D0%B1%D0%BE%D0%B9%D1%81%D1%8F/1776807922?i=1776807927&uo=4"
   },
@@ -202,7 +180,6 @@
     "title": "Облака",
     "releaseDate": "2024-10-29T12:00:00Z",
     "cover": "/covers/1776786527.webp",
-    "color": "#66cddc",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/cc/e3/b6/cce3b610-98e0-f3bf-7fa4-b5987150dd06/mzaf_892472495593193230.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BE%D0%B1%D0%BB%D0%B0%D0%BA%D0%B0/1776786526?i=1776786527&uo=4"
   },
@@ -211,7 +188,6 @@
     "title": "Мой ненаглядный",
     "releaseDate": "2024-10-29T12:00:00Z",
     "cover": "/covers/1772898202.webp",
-    "color": "#e59ebc",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d6/09/b8/d609b838-4413-891c-8980-d617f8cdf1ea/mzaf_10768996822320340476.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BC%D0%BE%D0%B9-%D0%BD%D0%B5%D0%BD%D0%B0%D0%B3%D0%BB%D1%8F%D0%B4%D0%BD%D1%8B%D0%B9/1772898200?i=1772898202&uo=4"
   },
@@ -220,7 +196,6 @@
     "title": "Нарисуй мне небо",
     "releaseDate": "2024-10-29T12:00:00Z",
     "cover": "/covers/1773331534.webp",
-    "color": "#f95999",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/da/0e/46/da0e4653-c7a6-abc0-0e16-47ac0df8caf0/mzaf_13336189485754857399.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BD%D0%B0%D1%80%D0%B8%D1%81%D1%83%D0%B9-%D0%BC%D0%BD%D0%B5-%D0%BD%D0%B5%D0%B1%D0%BE/1773331533?i=1773331534&uo=4"
   },
@@ -229,7 +204,6 @@
     "title": "Никто не услышит",
     "releaseDate": "2024-10-15T12:00:00Z",
     "cover": "/covers/1773145983.webp",
-    "color": "#c5f756",
     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/52/e7/c4/52e7c491-17e9-a7d5-3ff1-8e52de0afb39/mzaf_17725654447019826446.plus.aac.p.m4a",
     "apple": "https://music.apple.com/ru/album/%D0%BD%D0%B8%D0%BA%D1%82%D0%BE-%D0%BD%D0%B5-%D1%83%D1%81%D0%BB%D1%8B%D1%88%D0%B8%D1%82/1773145982?i=1773145983&uo=4"
   }
