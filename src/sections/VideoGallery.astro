@@ -1,27 +1,48 @@
 ---
+import Slider from "../components/Slider.astro";
 import { allVideosHref } from "../data/social";
 import { videos } from "../data/videos";
+
+// Слайд: база — 1 колонка (2 ролика), sm и lg — 2 колонки × 2 ряда (4 ролика).
+const PER_SLIDE_BY_BP = [2, 4, 4];
+const COLS_BY_BP = [1, 2, 2];
+
+// Сервер рендерит десктопную раскладку; на клиенте слайдер пересобирает её под брейкпоинт.
+const PER_SLIDE = PER_SLIDE_BY_BP[2];
+const pages = Array.from({ length: Math.ceil(videos.length / PER_SLIDE) }, (_, i) =>
+  videos.slice(i * PER_SLIDE, (i + 1) * PER_SLIDE),
+);
 ---
 
-<section id="videos" class="relative overflow-hidden border-y border-white/10 bg-neutral-950 py-20 sm:py-24">
+<section id="videos" class="relative overflow-hidden py-20 sm:py-24">
+  <!-- фиолетовая подложка с затемнением к верхнему и нижнему краям — как в секции «Музыка» -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0"
+    style="
+      background:
+        linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        linear-gradient(0deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        #2b0f66;
+    "
+  ></div>
+
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
       <div>
-        <p class="eyebrow">Видео</p>
         <h2 class="section-title mt-3">
-          Клипы <span class="text-white/40">и живые</span> выступления
+          Видео
         </h2>
       </div>
       <a href={allVideosHref} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Все видео в VK</a>
     </div>
 
-    <div class="mt-10 grid gap-6 sm:grid-cols-2 sm:gap-8">
-      {videos.map((video, i) => (
-        <article
-          class="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-1"
-          data-reveal
-          style={`--reveal-delay: ${i * 90}ms`}
-        >
+    <div class="mt-10" data-reveal>
+      <Slider perSlide={PER_SLIDE_BY_BP} cols={COLS_BY_BP} loop>
+        {pages.map((page) => (
+          <div data-slide-group class="grid min-w-0 flex-[0_0_100%] grid-cols-2 gap-4">
+            {page.map((video) => (
+        <article class="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur transition duration-300 hover:-translate-y-1">
           <button type="button" data-video-src={video.src} class="relative block w-full cursor-pointer">
             <div class="relative aspect-video w-full overflow-hidden bg-black">
               <img
@@ -48,7 +69,10 @@ import { videos } from "../data/videos";
             </div>
           </button>
         </article>
-      ))}
+            ))}
+          </div>
+        ))}
+      </Slider>
     </div>
   </div>
 

@@ -1,22 +1,17 @@
 ---
 // Призыв к действию: концерты — Мария Громова, сотрудничество — Антон Казак (контакты в футере).
-const bookingHref = "tel:+79037521308";
+const bookingHref = "mailto:7521308@gmail.com";
 const partnershipHref = "mailto:akazakmsk@gmail.com";
 ---
 
-<section id="booking" class="relative overflow-hidden py-24 sm:py-32">
+<section id="booking" class="relative overflow-hidden pb-14 pt-6 sm:pb-20 sm:pt-10">
   <div class="relative mx-auto max-w-4xl px-6 text-center" data-reveal>
     <h2 class="font-display text-3xl font-extrabold uppercase leading-[1.05] sm:text-5xl lg:text-6xl">
-      Такого вы ещё не слышали!<br />
-      <span class="text-white/40">А пора бы!</span>
+      <span class="text-gradient-hit">Такого</span> вы ещё<br /> не слышали!
     </h2>
 
-    <p class="mx-auto mt-6 max-w-2xl text-lg text-white/70">
-      Зовите проект на концерты, фестивали и праздники — или давайте придумаем что-то вместе.
-    </p>
-
-    <div class="mt-10 flex flex-wrap justify-center gap-4">
-      <a href={bookingHref} class="btn btn-primary">Пригласить на концерт</a>
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+      <a href={bookingHref} class="btn btn-primary">Концерты</a>
       <a href={partnershipHref} class="btn btn-ghost">Сотрудничество</a>
     </div>
   </div>

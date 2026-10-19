@@ -106,6 +106,20 @@ body {
     @apply border border-white/25 bg-white/5 text-white backdrop-blur hover:border-white/50 hover:bg-white/10;
   }
 
+  /* ---------- Акцент в заголовках: градиент букв логотипа (жёлтый → оранжевый → красный) ---------- */
+
+  .text-gradient-hit {
+    background-image: linear-gradient(
+      120deg,
+      #ffd23f 0%,
+      #ff7a1a 50%,
+      #ff3b2f 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
   /* ---------- Заголовки секций ---------- */
 
   .eyebrow {
@@ -193,6 +207,28 @@ body {
 
   [data-playing="true"] .eq > i:nth-child(3) {
     animation-delay: 0.3s;
+  }
+
+  /* ---------- Превью на обложке трека ----------
+     В покое видна только обложка и маленький значок в углу; затемнение с большой
+     иконкой появляется при наведении, фокусе и во время воспроизведения. */
+
+  .preview-state {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .preview-toggle:hover .preview-state,
+  .preview-toggle:focus-visible .preview-state,
+  .preview-toggle[data-playing="true"] .preview-state {
+    opacity: 1;
+  }
+
+  /* visibility, а не display: у значка есть утилита grid, которая перебила бы display из этого слоя */
+  .preview-toggle:hover .preview-badge,
+  .preview-toggle:focus-visible .preview-badge,
+  .preview-toggle[data-playing="true"] .preview-badge {
+    visibility: hidden;
   }
 
   /* ---------- Пульс кнопки play у клипов ---------- */

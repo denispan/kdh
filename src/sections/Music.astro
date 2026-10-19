@@ -24,26 +24,32 @@ const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === lat
 const singlesCount = `${tracks.length} ${plural(tracks.length, ["сингл", "сингла", "синглов"])}`;
 ---
 
-<section id="music" class="relative overflow-hidden border-b border-white/10 bg-neutral-950 py-20 sm:py-24">
+<section id="music" class="relative overflow-hidden py-20 sm:py-24">
+  <!-- фиолетовая подложка с затемнением к верхнему и нижнему краям -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0"
+    style="
+      background:
+        linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        linear-gradient(0deg, #000 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0) 60%),
+        #2b0f66;
+    "
+  ></div>
+
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
-      <div>
-        <p class="eyebrow">Музыка</p>
+
         <h2 class="section-title mt-3">
-          Хиты, которые вы знаете.<br />
-          <span class="text-white/40">Звучание — нет</span>
+          Музыка
         </h2>
-      </div>
-      <p class="max-w-md text-white/70 md:text-right">
-        {singlesCount} — каверы на любимые песни в казачьем многоголосии.
-        Нажмите ▶ на обложке: 30 секунд, чтобы влюбиться.
-      </p>
+
     </div>
 
     {latest && latestTrack && <FeaturedRelease track={latestTrack} release={latest} />}
 
     <div class="mt-10" data-reveal>
-      <Slider perSlide={PER_SLIDE_BY_BP} cols={COLS_BY_BP}>
+      <Slider perSlide={PER_SLIDE_BY_BP} cols={COLS_BY_BP} loop>
         {pages.map((page) => (
           <div data-slide-group class="grid min-w-0 flex-[0_0_100%] grid-cols-3 gap-4">
             {page.map((t) => (

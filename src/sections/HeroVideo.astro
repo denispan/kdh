@@ -17,7 +17,7 @@ const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === lat
     preload="metadata"
     poster="/video/hero-poster.jpg"
   >
-    <source src="/video/hero.webm" type="video/webm" />
+    <!-- Когда появится webm-версия (см. docs/hero-video-tz.md), вернуть её первым <source>: браузер берёт первый поддерживаемый. -->
     <source src="/video/hero.mp4" type="video/mp4" />
   </video>
 
@@ -31,7 +31,7 @@ const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === lat
           href="#music"
           class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur transition hover:border-white/50"
         >
-          <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+          <span class="h-1.5 w-1.5 rounded-full bg-[#ff7a1a]"></span>
           Новый сингл — «{latestTrack.title}»
         </a>
       )}
@@ -52,7 +52,7 @@ const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === lat
           </svg>
           Слушать
         </a>
-        <a href="#videos" class="btn btn-ghost">Смотреть клипы</a>
+        <a href="#videos" class="btn btn-ghost">Смотреть</a>
       </div>
     </div>
   </div>
