@@ -19,13 +19,13 @@ const navLinks = [
 >
   <div class="mx-auto max-w-6xl px-6">
     <div class="flex h-16 items-center justify-between gap-6">
-      <a href="/" class="flex h-11 shrink-0 items-center" aria-label="Казаки делают хиты — на главную">
-        <!-- logo-header.webp — белый логотип без тени, 400 px, сделан из 3000-px исходника фавиконки -->
+      <a href="/" class="flex h-8 shrink-0 items-center" aria-label="Казаки делают хиты — на главную">
+        <!-- logo-header.webp — белый силуэт широкого логотипа из logo.svg; цвет как у текста меню (85 %) -->
         <img
           src="/logo-header.webp"
           alt="Казаки делают хиты"
-          width="400"
-          height="400"
+          width="275"
+          height="66"
           class="h-full w-auto opacity-85"
           decoding="async"
           loading="eager"
@@ -52,9 +52,9 @@ const navLinks = [
               rel="noopener noreferrer"
               aria-label={s.label}
               title={s.label}
-              class="grid h-9 w-9 place-items-center rounded-lg bg-white/5 text-white/85 ring-1 ring-white/10 transition hover:bg-white/15 hover:text-white hover:ring-white/30"
+              class="grid h-9 w-9 place-items-center rounded-full bg-white/85 text-black transition hover:bg-white"
             >
-              <SocialIcon name={s.icon} class="h-4 w-4" />
+              <SocialIcon name={s.icon} class="h-5 w-5 opacity-70" />
             </a>
           </li>
         ))}
@@ -92,10 +92,10 @@ const navLinks = [
               rel="noopener noreferrer"
               aria-label={s.label}
               title={s.label}
-              class="grid h-11 w-11 place-items-center rounded-xl bg-white/10 text-white ring-1 ring-white/10 transition hover:bg-white/20"
+              class="grid h-11 w-11 place-items-center rounded-full bg-white/85 text-black transition hover:bg-white"
               data-menu-link
             >
-              <SocialIcon name={s.icon} />
+              <SocialIcon name={s.icon} class="h-6 w-6 opacity-70" />
             </a>
           </li>
         ))}

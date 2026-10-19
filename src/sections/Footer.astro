@@ -47,9 +47,9 @@ const year = new Date().getFullYear();
                 rel="noopener noreferrer"
                 aria-label={s.label}
                 title={s.label}
-                class="grid h-11 w-11 place-items-center rounded-xl bg-white/10 ring-1 ring-white/10 transition hover:bg-white/20 hover:ring-white/30"
+                class="grid h-11 w-11 place-items-center rounded-full bg-white/85 text-black transition hover:bg-white"
               >
-                <SocialIcon name={s.icon} />
+                <SocialIcon name={s.icon} class="h-6 w-6 opacity-70" />
               </a>
             </li>
           ))}
