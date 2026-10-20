@@ -4,7 +4,6 @@ import Slider from "../components/Slider.astro";
 import TrackCard from "../components/TrackCard.astro";
 import { tracks, type Track } from "../data/music";
 import { findRelease, latestRelease } from "../data/releases";
-import { plural } from "../lib/plural";
 
 // Рядов на слайде всегда 3, меняется число колонок:
 // база — 1 колонка (3 песни), sm — 2 колонки (6), lg — 3 колонки (9).
@@ -21,7 +20,6 @@ const pages: Track[][] = Array.from(
 const latest = latestRelease(tracks.map((t) => t.title));
 const latestTrack = latest ? tracks.find((t) => findRelease(t.title)?.id === latest.id) : undefined;
 
-const singlesCount = `${tracks.length} ${plural(tracks.length, ["сингл", "сингла", "синглов"])}`;
 ---
 
 <section id="music" class="relative overflow-hidden py-20 sm:py-24">

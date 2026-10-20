@@ -3,6 +3,9 @@ import { photos, type Photo } from "../data/photos";
 
 // Две ленты, идущие навстречу друг другу: чётные фото — в одной, нечётные — в другой.
 const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_, i) => i % 2 === 1)];
+
+// Три слота просмотра: предыдущее, текущее, следующее — лента сдвигается на один слот.
+const slots = ["prev", "current", "next"] as const;
 ---
 
 <section id="photos" class="relative overflow-hidden py-20 sm:py-24">
@@ -48,13 +51,13 @@ const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_,
     ))}
   </div>
 
-  <!-- Просмотр фото: стрелки по кругу, клавиши ←/→, свайп на телефоне, фон заблокирован -->
+  <!-- Просмотр фото: лента из трёх слотов едет за пальцем и доезжает плавно; стрелки, ←/→, фон заблокирован -->
   <dialog
     class="m-0 h-svh max-h-none w-screen max-w-none bg-transparent p-0 backdrop:bg-black/90"
     data-gallery-modal
     aria-label="Просмотр фото"
   >
-    <div class="relative flex h-full w-full items-center justify-center select-none" data-gallery-stage>
+    <div class="relative h-full w-full touch-pan-y overflow-hidden select-none" data-gallery-stage>
       <button
         type="button"
         class="absolute right-4 top-4 z-20 cursor-pointer rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur transition hover:bg-white/20"
@@ -87,22 +90,34 @@ const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_,
         </svg>
       </button>
 
-      <img
-        alt="Казаки делают хиты — фото с концертов и съёмок"
-        class="max-h-[88svh] max-w-[94vw] rounded-xl object-contain shadow-2xl touch-pan-y sm:max-w-[84vw]"
-        draggable="false"
-        data-gallery-image
-      />
+      <div class="flex h-full w-full will-change-transform" style="transform: translateX(-100%)" data-gallery-track>
+        {slots.map((slot) => (
+          <div class="flex h-full w-full shrink-0 items-center justify-center" data-gallery-slot={slot}>
+            <img
+              alt="Казаки делают хиты — фото с концертов и съёмок"
+              class="max-h-[88svh] max-w-[94vw] rounded-xl object-contain shadow-2xl sm:max-w-[84vw]"
+              draggable="false"
+            />
+          </div>
+        ))}
+      </div>
     </div>
   </dialog>
 
   <script>
     const SWIPE_THRESHOLD_PX = 40;
+    const SLIDE_MS = 320;
+    const SLIDE_EASING = "cubic-bezier(0.2, 0.7, 0.2, 1)";
 
     const modal = document.querySelector<HTMLDialogElement>("[data-gallery-modal]");
     const stage = modal?.querySelector<HTMLElement>("[data-gallery-stage]") ?? null;
-    const modalImg = modal?.querySelector<HTMLImageElement>("[data-gallery-image]") ?? null;
+    const track = modal?.querySelector<HTMLElement>("[data-gallery-track]") ?? null;
     const counter = modal?.querySelector<HTMLElement>("[data-gallery-counter]") ?? null;
+    const slotImages = {
+      prev: modal?.querySelector<HTMLImageElement>("[data-gallery-slot='prev'] img") ?? null,
+      current: modal?.querySelector<HTMLImageElement>("[data-gallery-slot='current'] img") ?? null,
+      next: modal?.querySelector<HTMLImageElement>("[data-gallery-slot='next'] img") ?? null,
+    };
 
     // Порядок фото — как в data/photos.ts (индекс лежит на кнопках превью).
     const sources: string[] = [];
@@ -113,25 +128,47 @@ const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_,
     }
 
     let current = 0;
+    let animating = false;
 
-    const preload = (index: number) => {
-      const img = new Image();
-      img.src = sources[index];
+    const wrap = (index: number) => (index + sources.length) % sources.length;
+
+    const setTranslate = (px: number, animate: boolean) => {
+      if (!track) return;
+      track.style.transition = animate ? `transform ${SLIDE_MS}ms ${SLIDE_EASING}` : "none";
+      track.style.transform = `translateX(calc(-100% + ${px}px))`;
     };
 
-    const show = (index: number) => {
-      if (!modalImg || sources.length === 0) return;
-      current = (index + sources.length) % sources.length;
-      modalImg.src = sources[current];
+    // Заполняем три слота соседями текущего фото и ставим ленту на середину.
+    const render = (index: number) => {
+      current = wrap(index);
+      if (slotImages.prev) slotImages.prev.src = sources[wrap(current - 1)];
+      if (slotImages.current) slotImages.current.src = sources[current];
+      if (slotImages.next) slotImages.next.src = sources[wrap(current + 1)];
       if (counter) counter.textContent = `${current + 1} / ${sources.length}`;
-      // Соседей подгружаем заранее, чтобы перелистывание было мгновенным.
-      preload((current + 1) % sources.length);
-      preload((current - 1 + sources.length) % sources.length);
+      setTranslate(0, false);
+    };
+
+    // Доезжаем до соседнего слота, затем без анимации перестраиваем ленту вокруг нового текущего.
+    const slideTo = (direction: -1 | 1) => {
+      if (!track || animating || sources.length < 2) return;
+      animating = true;
+      const width = track.clientWidth;
+      setTranslate(-direction * width, true);
+      const finish = () => {
+        track.removeEventListener("transitionend", finish);
+        animating = false;
+        render(current + direction);
+      };
+      track.addEventListener("transitionend", finish);
+      // Страховка на случай, если transitionend не придёт (вкладка свернулась).
+      window.setTimeout(() => {
+        if (animating) finish();
+      }, SLIDE_MS + 100);
     };
 
     const open = (index: number) => {
       if (!modal) return;
-      show(index);
+      render(index);
       modal.showModal();
       // Пока открыт просмотр, страница под ним не прокручивается.
       document.documentElement.style.overflow = "hidden";
@@ -141,48 +178,59 @@ const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_,
 
     modal?.addEventListener("close", () => {
       document.documentElement.style.overflow = "";
-      if (modalImg) modalImg.removeAttribute("src");
+      for (const img of Object.values(slotImages)) img?.removeAttribute("src");
     });
 
     modal?.querySelector("[data-gallery-close]")?.addEventListener("click", close);
-    modal?.querySelector("[data-gallery-prev]")?.addEventListener("click", () => show(current - 1));
-    modal?.querySelector("[data-gallery-next]")?.addEventListener("click", () => show(current + 1));
-
-    // Клик по тёмному фону (мимо картинки и кнопок) закрывает просмотр — но не после свайпа.
-    let swiped = false;
-
-    stage?.addEventListener("click", (e) => {
-      if (swiped) {
-        swiped = false;
-        return;
-      }
-      if (e.target === stage) close();
-    });
+    modal?.querySelector("[data-gallery-prev]")?.addEventListener("click", () => slideTo(-1));
+    modal?.querySelector("[data-gallery-next]")?.addEventListener("click", () => slideTo(1));
 
     modal?.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") show(current + 1);
-      if (e.key === "ArrowLeft") show(current - 1);
+      if (e.key === "ArrowRight") slideTo(1);
+      if (e.key === "ArrowLeft") slideTo(-1);
     });
 
-    // Свайп пальцем (и мышью) по сцене: влево — следующее, вправо — предыдущее.
-    let swipeStartX: number | null = null;
+    // Перетаскивание пальцем или мышью: лента едет за курсором, на отпускании доезжает или возвращается.
+    let dragStartX: number | null = null;
+    let dragDx = 0;
 
     stage?.addEventListener("pointerdown", (e) => {
-      swipeStartX = e.clientX;
+      if (animating || e.button !== 0) return;
+      dragStartX = e.clientX;
+      dragDx = 0;
+      try {
+        stage.setPointerCapture(e.pointerId);
+      } catch {
+        // Указателя с таким id нет (синтетическое событие) — перетаскивание работает и без захвата.
+      }
     });
 
-    stage?.addEventListener("pointerup", (e) => {
-      if (swipeStartX === null) return;
-      const dx = e.clientX - swipeStartX;
-      swipeStartX = null;
-      if (Math.abs(dx) < SWIPE_THRESHOLD_PX) return;
-      swiped = true;
-      if (dx < 0) show(current + 1);
-      else show(current - 1);
+    stage?.addEventListener("pointermove", (e) => {
+      if (dragStartX === null) return;
+      dragDx = e.clientX - dragStartX;
+      setTranslate(dragDx, false);
     });
 
-    stage?.addEventListener("pointercancel", () => {
-      swipeStartX = null;
+    const endDrag = () => {
+      if (dragStartX === null) return;
+      dragStartX = null;
+      if (Math.abs(dragDx) >= SWIPE_THRESHOLD_PX) {
+        slideTo(dragDx < 0 ? 1 : -1);
+      } else {
+        setTranslate(0, true);
+      }
+    };
+
+    stage?.addEventListener("pointerup", endDrag);
+    stage?.addEventListener("pointercancel", endDrag);
+
+    // Клик по тёмному фону (мимо картинки и кнопок) закрывает просмотр — но не после перетаскивания.
+    stage?.addEventListener("click", (e) => {
+      if (Math.abs(dragDx) >= SWIPE_THRESHOLD_PX) {
+        dragDx = 0;
+        return;
+      }
+      if (e.target instanceof HTMLElement && e.target.hasAttribute("data-gallery-slot")) close();
     });
 
     for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-photo-index]")) {
