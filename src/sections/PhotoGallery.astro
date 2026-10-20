@@ -18,13 +18,14 @@ const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_,
         <div class="marquee-track gap-4 pr-4" data-direction={rowIndex === 1 ? "reverse" : undefined}>
           {[false, true].map((clone) => (
             <ul class="flex shrink-0 gap-4" data-clone={clone ? "" : undefined} aria-hidden={clone ? "true" : undefined}>
-              {row.map((photo) => (
+              {row.map((photo, i) => (
                 <li class="shrink-0">
                   <button
                     type="button"
                     class="block h-44 cursor-pointer overflow-hidden rounded-xl ring-1 ring-white/10 transition duration-300 hover:scale-[1.03] hover:ring-white/40 sm:h-56 lg:h-64"
                     style={`background-color: ${photo.color}; aspect-ratio: ${photo.width} / ${photo.height}`}
                     data-photo={photo.full}
+                    data-photo-index={i * 2 + rowIndex}
                     tabindex={clone ? -1 : undefined}
                     aria-label="Открыть фото"
                   >
@@ -47,53 +48,147 @@ const rows: Photo[][] = [photos.filter((_, i) => i % 2 === 0), photos.filter((_,
     ))}
   </div>
 
+  <!-- Просмотр фото: стрелки по кругу, клавиши ←/→, свайп на телефоне, фон заблокирован -->
   <dialog
-    class="m-0 h-[90svh] w-[92vw] max-w-none bg-transparent p-0 backdrop:bg-black/85"
+    class="m-0 h-svh max-h-none w-screen max-w-none bg-transparent p-0 backdrop:bg-black/90"
     data-gallery-modal
+    aria-label="Просмотр фото"
   >
-    <div class="relative h-full w-full rounded-2xl border border-white/15 bg-black/20 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+    <div class="relative flex h-full w-full items-center justify-center select-none" data-gallery-stage>
       <button
         type="button"
-        class="absolute right-4 top-4 z-50 cursor-pointer rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/20"
+        class="absolute right-4 top-4 z-20 cursor-pointer rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur transition hover:bg-white/20"
         data-gallery-close
       >
         Закрыть
       </button>
 
-      <img alt="" class="h-full w-full rounded-2xl object-contain" data-gallery-image />
+      <div class="absolute left-4 top-4 z-20 rounded-full bg-black/50 px-3 py-1.5 text-xs text-white/80 tabular-nums backdrop-blur" data-gallery-counter></div>
+
+      <button
+        type="button"
+        class="absolute left-2 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/25 sm:grid sm:left-4"
+        data-gallery-prev
+        aria-label="Предыдущее фото"
+      >
+        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7" />
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="absolute right-2 top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/25 sm:grid sm:right-4"
+        data-gallery-next
+        aria-label="Следующее фото"
+      >
+        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <img
+        alt="Казаки делают хиты — фото с концертов и съёмок"
+        class="max-h-[88svh] max-w-[94vw] rounded-xl object-contain shadow-2xl touch-pan-y sm:max-w-[84vw]"
+        draggable="false"
+        data-gallery-image
+      />
     </div>
   </dialog>
 
-  <style>
-    dialog[data-gallery-modal] {
-      position: fixed;
-      inset: 50% auto auto 50%;
-      transform: translate(-50%, -50%);
-    }
-  </style>
-
   <script>
-    const modal = document.querySelector<HTMLDialogElement>("[data-gallery-modal]");
-    const modalImg = document.querySelector<HTMLImageElement>("[data-gallery-image]");
-    const closeBtn = document.querySelector("[data-gallery-close]");
+    const SWIPE_THRESHOLD_PX = 40;
 
-    const open = (src: string) => {
-      if (!modalImg || !modal) return;
-      modalImg.src = src;
+    const modal = document.querySelector<HTMLDialogElement>("[data-gallery-modal]");
+    const stage = modal?.querySelector<HTMLElement>("[data-gallery-stage]") ?? null;
+    const modalImg = modal?.querySelector<HTMLImageElement>("[data-gallery-image]") ?? null;
+    const counter = modal?.querySelector<HTMLElement>("[data-gallery-counter]") ?? null;
+
+    // Порядок фото — как в data/photos.ts (индекс лежит на кнопках превью).
+    const sources: string[] = [];
+    for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-photo][data-photo-index]")) {
+      const index = Number(btn.dataset.photoIndex);
+      const src = btn.dataset.photo;
+      if (Number.isInteger(index) && src) sources[index] = src;
+    }
+
+    let current = 0;
+
+    const preload = (index: number) => {
+      const img = new Image();
+      img.src = sources[index];
+    };
+
+    const show = (index: number) => {
+      if (!modalImg || sources.length === 0) return;
+      current = (index + sources.length) % sources.length;
+      modalImg.src = sources[current];
+      if (counter) counter.textContent = `${current + 1} / ${sources.length}`;
+      // Соседей подгружаем заранее, чтобы перелистывание было мгновенным.
+      preload((current + 1) % sources.length);
+      preload((current - 1 + sources.length) % sources.length);
+    };
+
+    const open = (index: number) => {
+      if (!modal) return;
+      show(index);
       modal.showModal();
+      // Пока открыт просмотр, страница под ним не прокручивается.
+      document.documentElement.style.overflow = "hidden";
     };
 
     const close = () => modal?.close();
 
-    closeBtn?.addEventListener("click", close);
-    modal?.addEventListener("click", (e) => {
-      if (e.target === modal) close();
+    modal?.addEventListener("close", () => {
+      document.documentElement.style.overflow = "";
+      if (modalImg) modalImg.removeAttribute("src");
     });
 
-    for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-photo]")) {
+    modal?.querySelector("[data-gallery-close]")?.addEventListener("click", close);
+    modal?.querySelector("[data-gallery-prev]")?.addEventListener("click", () => show(current - 1));
+    modal?.querySelector("[data-gallery-next]")?.addEventListener("click", () => show(current + 1));
+
+    // Клик по тёмному фону (мимо картинки и кнопок) закрывает просмотр — но не после свайпа.
+    let swiped = false;
+
+    stage?.addEventListener("click", (e) => {
+      if (swiped) {
+        swiped = false;
+        return;
+      }
+      if (e.target === stage) close();
+    });
+
+    modal?.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") show(current + 1);
+      if (e.key === "ArrowLeft") show(current - 1);
+    });
+
+    // Свайп пальцем (и мышью) по сцене: влево — следующее, вправо — предыдущее.
+    let swipeStartX: number | null = null;
+
+    stage?.addEventListener("pointerdown", (e) => {
+      swipeStartX = e.clientX;
+    });
+
+    stage?.addEventListener("pointerup", (e) => {
+      if (swipeStartX === null) return;
+      const dx = e.clientX - swipeStartX;
+      swipeStartX = null;
+      if (Math.abs(dx) < SWIPE_THRESHOLD_PX) return;
+      swiped = true;
+      if (dx < 0) show(current + 1);
+      else show(current - 1);
+    });
+
+    stage?.addEventListener("pointercancel", () => {
+      swipeStartX = null;
+    });
+
+    for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-photo-index]")) {
       btn.addEventListener("click", () => {
-        const src = btn.dataset.photo;
-        if (src) open(src);
+        const index = Number(btn.dataset.photoIndex);
+        if (Number.isInteger(index)) open(index);
       });
     }
   </script>
